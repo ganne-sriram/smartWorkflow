@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { DraftWorkflowService } from '../../services/draft-workflow.service';
 
 @Component({
   selector: 'app-process-flow-info',
@@ -14,13 +15,16 @@ export class ProcessFlowInfoComponent {
   processFlowObjective: string = '';
   numberOfStages: string = '';
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private draftService: DraftWorkflowService
+  ) {}
 
   onNext() {
-    console.log('Process Flow Information:', {
-      name: this.processFlowName,
-      objective: this.processFlowObjective,
-      stages: this.numberOfStages
-    });
+    const stageCount = parseInt(this.numberOfStages, 10);
+    if (this.processFlowName && this.processFlowObjective && stageCount > 0) {
+      this.draftService.createDraft(this.processFlowName, this.processFlowObjective, stageCount);
+      this.router.navigate(['/workspace-wizard']);
+    }
   }
 }
