@@ -1,0 +1,44 @@
+<div class="page-container">
+  <div class="form-container">
+    <h1 class="page-title">Process Flow Information</h1>
+    
+    <form class="process-flow-form">
+      <div class="form-group">
+        <label for="flowName">What is the name of the process flow?</label>
+        <input 
+          type="text" 
+          id="flowName" 
+          class="form-input"
+          [(ngModel)]="processFlowName"
+          name="flowName"
+          placeholder="">
+      </div>
+
+      <div class="form-group">
+        <label for="flowObjective">What is the objective of the process flow?</label>
+        <textarea 
+          id="flowObjective" 
+          class="form-textarea"
+          [(ngModel)]="processFlowObjective"
+          name="flowObjective"
+          rows="4"
+          placeholder=""></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="numberOfStages">How many stages are going to be there in the process flow?</label>
+        <input 
+          type="text" 
+          id="numberOfStages" 
+          class="form-input"
+          [(ngModel)]="numberOfStages"
+          name="numberOfStages"
+          placeholder="">
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="next-button" (click)="onNext()">Next</button>
+      </div>
+    </form>
+  </div>
+</div>

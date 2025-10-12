@@ -12,6 +12,10 @@ export class DesignProcessFlowComponent {
   constructor(private router: Router) {}
 
   navigateToWorkflow(type: string) {
-    console.log(`Navigate to ${type} workflow`);
+    if (type === 'templates') {
+      this.router.navigate(['/process-flow-info']);
+    } else {
+      console.log(`Navigate to ${type} workflow`);
+    }
   }
 }
