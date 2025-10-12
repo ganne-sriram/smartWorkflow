@@ -31,20 +31,25 @@ export class TestRunnerComponent implements OnInit {
       return;
     }
 
-    const existingTestRun = this.testRunService.getTestRun();
-    if (existingTestRun && existingTestRun.templateId === templateId) {
-      this.testRun = existingTestRun;
-    } else {
-      const template = this.templateService.getTemplateById(templateId);
-      if (!template) {
+    this.templateService.getTemplateById(templateId).subscribe({
+      next: (template) => {
+        this.testRun = createTestRunFromTemplate(template);
+        this.testRunService.saveTestRun(this.testRun).subscribe({
+          next: (savedTestRun) => {
+            this.testRun = savedTestRun;
+            this.loadCurrentStage();
+          },
+          error: (error) => {
+            console.error('Error saving test run:', error);
+            this.router.navigate(['/available-workflows']);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error loading template:', error);
         this.router.navigate(['/available-workflows']);
-        return;
       }
-      this.testRun = createTestRunFromTemplate(template);
-      this.testRunService.saveTestRun(this.testRun);
-    }
-
-    this.loadCurrentStage();
+    });
   }
 
   loadCurrentStage() {
@@ -96,8 +101,15 @@ export class TestRunnerComponent implements OnInit {
     
     if (this.testRun.currentStageIndex > 0) {
       this.testRun.currentStageIndex--;
-      this.testRunService.saveTestRun(this.testRun);
-      this.loadCurrentStage();
+      this.testRunService.saveTestRun(this.testRun).subscribe({
+        next: (updated) => {
+          this.testRun = updated;
+          this.loadCurrentStage();
+        },
+        error: (error) => {
+          console.error('Error updating test run:', error);
+        }
+      });
     }
   }
 
@@ -108,8 +120,15 @@ export class TestRunnerComponent implements OnInit {
     
     if (this.testRun.currentStageIndex < this.testRun.stages.length - 1) {
       this.testRun.currentStageIndex++;
-      this.testRunService.saveTestRun(this.testRun);
-      this.loadCurrentStage();
+      this.testRunService.saveTestRun(this.testRun).subscribe({
+        next: (updated) => {
+          this.testRun = updated;
+          this.loadCurrentStage();
+        },
+        error: (error) => {
+          console.error('Error updating test run:', error);
+        }
+      });
     }
   }
 
@@ -117,7 +136,14 @@ export class TestRunnerComponent implements OnInit {
     if (!this.testRun || !this.currentStage || !this.canProceed()) return;
     
     this.testRunService.updateStage(this.testRun, this.testRun.currentStageIndex, this.currentStage);
-    this.router.navigate(['/test-summary']);
+    this.testRunService.saveTestRun(this.testRun).subscribe({
+      next: (updated) => {
+        this.router.navigate(['/test-summary', updated.id]);
+      },
+      error: (error) => {
+        console.error('Error submitting test run:', error);
+      }
+    });
   }
 
   goToStage(index: number) {
@@ -125,8 +151,15 @@ export class TestRunnerComponent implements OnInit {
     
     this.testRunService.updateStage(this.testRun, this.testRun.currentStageIndex, this.currentStage);
     this.testRun.currentStageIndex = index;
-    this.testRunService.saveTestRun(this.testRun);
-    this.loadCurrentStage();
+    this.testRunService.saveTestRun(this.testRun).subscribe({
+      next: (updated) => {
+        this.testRun = updated;
+        this.loadCurrentStage();
+      },
+      error: (error) => {
+        console.error('Error updating test run:', error);
+      }
+    });
   }
 
   getStageOptionCount(stageIndex: number): number {

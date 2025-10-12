@@ -31,17 +31,36 @@ export class WorkflowCompletionComponent implements OnInit {
   saveAsTemplate() {
     if (!this.workflow) return;
     const template = convertDraftToTemplate(this.workflow);
-    this.templateService.saveTemplate(template);
-    this.draftService.clearDraft();
-    this.router.navigate(['/available-workflows']);
+    this.templateService.saveTemplate(template).subscribe({
+      next: (savedTemplate) => {
+        this.draftService.clearDraft();
+        this.router.navigate(['/available-workflows']);
+      },
+      error: (error) => {
+        console.error('Error saving template:', error);
+      }
+    });
   }
 
   exploreWorkflow() {
     if (!this.workflow) return;
     const template = convertDraftToTemplate(this.workflow);
-    this.templateService.saveTemplate(template);
-    this.draftService.clearDraft();
-    this.router.navigate(['/test-runner', template.id]);
+    this.templateService.saveTemplate(template).subscribe({
+      next: (savedTemplate) => {
+        this.templateService.publishTemplate(savedTemplate.id).subscribe({
+          next: (publishedTemplate) => {
+            this.draftService.clearDraft();
+            this.router.navigate(['/test-runner', publishedTemplate.id]);
+          },
+          error: (error) => {
+            console.error('Error publishing template:', error);
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error saving template:', error);
+      }
+    });
   }
 
   designAnother() {

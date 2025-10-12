@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: coreops-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: coreops
+    networks:
+      - coreops-network
+
+  backend:
+    build: ./backend
+    container_name: coreops-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: coreops
+      JWT_SECRET: your-secret-key-change-in-production-make-it-at-least-256-bits-long
+    networks:
+      - coreops-network
+    restart: unless-stopped
+
+  frontend:
+    build: .
+    container_name: coreops-frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    networks:
+      - coreops-network
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+
+networks:
+  coreops-network:
+    driver: bridge

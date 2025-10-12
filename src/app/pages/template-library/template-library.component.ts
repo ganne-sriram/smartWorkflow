@@ -22,7 +22,15 @@ export class TemplateLibraryComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.templates = this.templateService.getTemplates();
+    this.templateService.getTemplates().subscribe({
+      next: (templates) => {
+        this.templates = templates.filter(t => t.status === 'ACTIVE');
+      },
+      error: (error) => {
+        console.error('Error loading templates:', error);
+        this.templates = [];
+      }
+    });
   }
 
   selectTemplate(template: Template) {

@@ -6,7 +6,11 @@ export interface Template {
   objective: string;
   stages: TemplateStage[];
   status: 'ACTIVE' | 'DRAFT' | 'ARCHIVED';
+  version: number;
+  createdBy?: string;
   createdAt: Date;
+  updatedBy?: string;
+  updatedAt: Date;
   lastUpdated: Date;
 }
 
@@ -35,7 +39,7 @@ export interface TestRunStage {
 
 export function convertDraftToTemplate(draft: DraftWorkflow): Template {
   return {
-    id: Date.now().toString(),
+    id: '',
     name: draft.name,
     objective: draft.objective,
     stages: draft.stages.map(stage => ({
@@ -43,15 +47,17 @@ export function convertDraftToTemplate(draft: DraftWorkflow): Template {
       availableOptions: [...stage.selectedOptions],
       availableChecklists: [...stage.selectedChecklists]
     })),
-    status: 'ACTIVE',
+    status: 'DRAFT',
+    version: 1,
     createdAt: new Date(),
+    updatedAt: new Date(),
     lastUpdated: new Date()
   };
 }
 
 export function createTestRunFromTemplate(template: Template): TestRun {
   return {
-    id: Date.now().toString(),
+    id: 'temp_' + Date.now().toString(),
     templateId: template.id,
     templateName: template.name,
     currentStageIndex: 0,

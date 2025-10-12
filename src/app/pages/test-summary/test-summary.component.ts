@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { TestRunService } from '../../services/test-run.service';
 import { TestRun } from '../../models/template.model';
 
@@ -16,19 +16,29 @@ export class TestSummaryComponent implements OnInit {
   resultPayload: string = '';
 
   constructor(
+    private route: ActivatedRoute,
     private testRunService: TestRunService,
     private router: Router
   ) {}
 
   ngOnInit() {
-    this.testRun = this.testRunService.getTestRun();
-    if (!this.testRun) {
+    const testRunId = this.route.snapshot.paramMap.get('testRunId');
+    if (!testRunId) {
       this.router.navigate(['/available-workflows']);
       return;
     }
 
-    this.generateSummary();
-    this.generateResultPayload();
+    this.testRunService.getTestRun(testRunId).subscribe({
+      next: (testRun) => {
+        this.testRun = testRun;
+        this.generateSummary();
+        this.generateResultPayload();
+      },
+      error: (error) => {
+        console.error('Error loading test run:', error);
+        this.router.navigate(['/available-workflows']);
+      }
+    });
   }
 
   generateSummary() {
@@ -67,12 +77,10 @@ export class TestSummaryComponent implements OnInit {
   }
 
   goToDashboard() {
-    this.testRunService.clearTestRun();
     this.router.navigate(['/available-workflows']);
   }
 
   runAnotherTest() {
-    this.testRunService.clearTestRun();
     this.router.navigate(['/available-workflows']);
   }
 }

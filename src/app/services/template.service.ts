@@ -1,39 +1,44 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { Template } from '../models/template.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TemplateService {
-  private readonly STORAGE_KEY = 'saved_templates';
 
-  saveTemplate(template: Template): void {
-    const templates = this.getTemplates();
-    templates.push(template);
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(templates));
+  constructor(private apiService: ApiService) {}
+
+  saveTemplate(template: Template): Observable<Template> {
+    return this.apiService.post<Template>('templates', template);
   }
 
-  getTemplates(): Template[] {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : [];
+  getTemplates(): Observable<Template[]> {
+    return this.apiService.get<Template[]>('templates');
   }
 
-  getTemplateById(id: string): Template | null {
-    const templates = this.getTemplates();
-    return templates.find(t => t.id === id) || null;
+  getTemplateById(id: string): Observable<Template> {
+    return this.apiService.get<Template>(`templates/${id}`);
   }
 
-  updateTemplate(template: Template): void {
-    const templates = this.getTemplates();
-    const index = templates.findIndex(t => t.id === template.id);
-    if (index > -1) {
-      templates[index] = template;
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(templates));
-    }
+  updateTemplate(template: Template): Observable<Template> {
+    return this.apiService.put<Template>(`templates/${template.id}`, template);
   }
 
-  deleteTemplate(id: string): void {
-    const templates = this.getTemplates().filter(t => t.id !== id);
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(templates));
+  publishTemplate(id: string): Observable<Template> {
+    return this.apiService.post<Template>(`templates/${id}/publish`, {});
+  }
+
+  deleteTemplate(id: string): Observable<void> {
+    return this.apiService.delete<void>(`templates/${id}`);
+  }
+
+  importTemplate(json: string): Observable<Template> {
+    return this.apiService.post<Template>('templates/import', { data: json });
+  }
+
+  exportTemplate(id: string): Observable<string> {
+    return this.apiService.get<string>(`templates/${id}/export`);
   }
 }
