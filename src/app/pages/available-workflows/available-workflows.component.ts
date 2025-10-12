@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { TemplateService } from '../../services/template.service';
+import { Template } from '../../models/template.model';
 
 interface Workflow {
   id: string;
@@ -10,6 +13,7 @@ interface Workflow {
   openCases: number;
   resolvedCases: number;
   lastUpdated: string;
+  type: 'workflow' | 'template';
 }
 
 @Component({
@@ -21,8 +25,17 @@ interface Workflow {
 export class AvailableWorkflowsComponent implements OnInit {
   workflows: Workflow[] = [];
 
+  constructor(
+    private router: Router,
+    private templateService: TemplateService
+  ) {}
+
   ngOnInit() {
-    this.workflows = [
+    this.loadWorkflows();
+  }
+
+  loadWorkflows() {
+    const regularWorkflows: Workflow[] = [
       {
         id: '1',
         name: 'Customer Onboarding Process',
@@ -31,7 +44,8 @@ export class AvailableWorkflowsComponent implements OnInit {
         totalCases: 234,
         openCases: 45,
         resolvedCases: 189,
-        lastUpdated: 'Oct 11, 2024'
+        lastUpdated: 'Oct 11, 2024',
+        type: 'workflow'
       },
       {
         id: '2',
@@ -41,7 +55,8 @@ export class AvailableWorkflowsComponent implements OnInit {
         totalCases: 567,
         openCases: 89,
         resolvedCases: 478,
-        lastUpdated: 'Oct 10, 2024'
+        lastUpdated: 'Oct 10, 2024',
+        type: 'workflow'
       },
       {
         id: '3',
@@ -51,7 +66,8 @@ export class AvailableWorkflowsComponent implements OnInit {
         totalCases: 892,
         openCases: 123,
         resolvedCases: 769,
-        lastUpdated: 'Oct 11, 2024'
+        lastUpdated: 'Oct 11, 2024',
+        type: 'workflow'
       },
       {
         id: '4',
@@ -61,7 +77,8 @@ export class AvailableWorkflowsComponent implements OnInit {
         totalCases: 156,
         openCases: 67,
         resolvedCases: 89,
-        lastUpdated: 'Oct 9, 2024'
+        lastUpdated: 'Oct 9, 2024',
+        type: 'workflow'
       },
       {
         id: '5',
@@ -71,7 +88,8 @@ export class AvailableWorkflowsComponent implements OnInit {
         totalCases: 345,
         openCases: 78,
         resolvedCases: 267,
-        lastUpdated: 'Oct 10, 2024'
+        lastUpdated: 'Oct 10, 2024',
+        type: 'workflow'
       },
       {
         id: '6',
@@ -81,12 +99,32 @@ export class AvailableWorkflowsComponent implements OnInit {
         totalCases: 423,
         openCases: 91,
         resolvedCases: 332,
-        lastUpdated: 'Oct 11, 2024'
+        lastUpdated: 'Oct 11, 2024',
+        type: 'workflow'
       }
     ];
+
+    const templates = this.templateService.getTemplates();
+    const templateWorkflows: Workflow[] = templates.map(template => ({
+      id: template.id,
+      name: template.name,
+      status: template.status,
+      stages: template.stages.length,
+      totalCases: 0,
+      openCases: 0,
+      resolvedCases: 0,
+      lastUpdated: new Date(template.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+      type: 'template' as const
+    }));
+
+    this.workflows = [...templateWorkflows, ...regularWorkflows];
   }
 
-  openWorkflow(id: string) {
-    console.log(`Opening workflow: ${id}`);
+  openWorkflow(workflow: Workflow) {
+    if (workflow.type === 'template') {
+      this.router.navigate(['/test-runner', workflow.id]);
+    } else {
+      console.log(`Opening workflow: ${workflow.id}`);
+    }
   }
 }

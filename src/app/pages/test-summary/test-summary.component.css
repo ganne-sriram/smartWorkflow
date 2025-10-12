@@ -1,4 +1,4 @@
-.completion-container {
+.summary-container {
   min-height: 100vh;
   background: #e5e7eb;
 }
@@ -47,13 +47,12 @@
   font-weight: 600;
 }
 
-.success-content {
-  max-width: 800px;
+.summary-content {
+  max-width: 1000px;
   margin: 4rem auto;
   padding: 3rem;
   background: white;
   border-radius: 0.75rem;
-  text-align: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -63,25 +62,58 @@
   justify-content: center;
 }
 
-.success-content h1 {
+.summary-content h1 {
   font-size: 2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.workflow-name {
+  font-size: 1.125rem;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.summary-section,
+.payload-section {
+  margin-bottom: 2.5rem;
+}
+
+.summary-section h2,
+.payload-section h2 {
+  font-size: 1.25rem;
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 1rem;
 }
 
-.success-content p {
-  font-size: 1.125rem;
-  color: #6b7280;
-  margin-bottom: 3rem;
+.summary-section p {
+  font-size: 1rem;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.payload-content {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  color: #1f2937;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .actions {
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   gap: 1rem;
-  max-width: 400px;
-  margin: 0 auto;
+  margin-top: 3rem;
 }
 
 .action-btn {
@@ -104,35 +136,21 @@
 }
 
 .action-btn.secondary {
-  background: #3b82f6;
+  background: #6b7280;
   color: white;
 }
 
 .action-btn.secondary:hover {
-  background: #2563eb;
-}
-
-.action-btn.tertiary {
-  background: #3b82f6;
-  color: white;
-}
-
-.action-btn.tertiary:hover {
-  background: #2563eb;
-}
-
-.action-btn.save-template {
-  background: #f59e0b;
-  color: white;
-}
-
-.action-btn.save-template:hover {
-  background: #d97706;
+  background: #4b5563;
 }
 
 @media (max-width: 768px) {
-  .success-content {
+  .summary-content {
     margin: 2rem 1rem;
     padding: 2rem 1.5rem;
+  }
+
+  .actions {
+    flex-direction: column;
   }
 }

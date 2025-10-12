@@ -1,0 +1,168 @@
+.library-container {
+  min-height: 100vh;
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.library-header {
+  margin-bottom: 3rem;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.375rem;
+  color: #6b7280;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1.5rem;
+}
+
+.back-button:hover {
+  background: #f9fafb;
+  color: #1f2937;
+}
+
+.library-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.subtitle {
+  color: #6b7280;
+  font-size: 1rem;
+}
+
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem;
+}
+
+.template-card {
+  background: white;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 2px solid #f59e0b;
+}
+
+.template-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  border-color: #d97706;
+}
+
+.template-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.template-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  flex: 1;
+}
+
+.template-badge {
+  padding: 0.25rem 0.75rem;
+  background: #10b981;
+  color: white;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.template-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.template-objective {
+  color: #6b7280;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.template-stats {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.stat-item svg {
+  color: #9ca3af;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.empty-state svg {
+  margin-bottom: 2rem;
+}
+
+.empty-state h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  color: #6b7280;
+  margin-bottom: 2rem;
+}
+
+.create-button {
+  padding: 0.75rem 2rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.create-button:hover {
+  background: #2563eb;
+}
+
+@media (max-width: 768px) {
+  .templates-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .library-container {
+    padding: 1rem;
+  }
+}

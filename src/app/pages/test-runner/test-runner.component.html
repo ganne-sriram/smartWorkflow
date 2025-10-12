@@ -1,0 +1,91 @@
+<div class="test-runner-container" *ngIf="testRun">
+  <div class="stepper">
+    <div *ngFor="let stage of testRun.stages; let i = index" class="step" 
+         [class.active]="i === testRun.currentStageIndex"
+         [class.completed]="i < testRun.currentStageIndex"
+         (click)="goToStage(i)">
+      <div class="step-number">{{ i + 1 }}</div>
+      <div class="step-label">{{ stage.name }}</div>
+    </div>
+  </div>
+
+  <div class="test-runner-content">
+    <div class="left-summary">
+      <h3>{{ testRun.templateName }}</h3>
+      <div class="summary-list">
+        <div *ngFor="let stage of testRun.stages; let i = index" 
+             class="summary-item"
+             [class.active]="i === testRun.currentStageIndex"
+             [class.completed]="i < testRun.currentStageIndex">
+          <div class="summary-name">{{ stage.name }}</div>
+          <div class="summary-counts">
+            <div>Options: {{ getStageOptionCount(i) }}</div>
+            <div>Checklists: {{ getStageChecklistCount(i) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="center-workspace">
+      <div class="stage-config" *ngIf="currentStage">
+        <h2>{{ currentStage.name }}</h2>
+
+        <div class="options-section">
+          <h3>Options:</h3>
+          <div class="options-grid">
+            <div *ngFor="let option of currentStage.availableOptions" class="option-item">
+              <label class="checkbox-label">
+                <input type="checkbox" 
+                       [checked]="isOptionSelected(option)"
+                       (change)="toggleOption(option)">
+                <span>{{ option }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="checklists-section">
+          <h3>Checklists:</h3>
+          <div class="checklists-grid">
+            <div *ngFor="let checklist of currentStage.availableChecklists" class="checklist-item">
+              <label class="checkbox-label">
+                <input type="checkbox" 
+                       [checked]="isChecklistSelected(checklist)"
+                       (change)="toggleChecklist(checklist)">
+                <span>{{ checklist }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="validation-message" *ngIf="!canProceed()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 9V13M12 17H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Please select at least 1 option and 1 checklist to proceed</span>
+        </div>
+
+        <div class="actions">
+          <button class="back-btn" (click)="goBack()" [disabled]="isFirstStage()">
+            Back
+          </button>
+          <button class="next-btn" 
+                  (click)="isLastStage() ? submitTest() : goNext()" 
+                  [disabled]="!canProceed()">
+            {{ isLastStage() ? 'Submit' : 'Next' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <app-case-quality-score
+        [completed]="getCompletedChecklistCount()"
+        [total]="getTotalChecklistCount()"
+        [stageName]="currentStage?.name || ''"
+        [checklistItems]="currentStage?.availableChecklists || []"
+        [selectedItems]="currentStage?.selectedChecklists || []">
+      </app-case-quality-score>
+    </div>
+  </div>
+</div>
