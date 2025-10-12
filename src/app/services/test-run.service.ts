@@ -1,27 +1,32 @@
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
 import { TestRun, TestRunStage } from '../models/template.model';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TestRunService {
-  private readonly STORAGE_KEY = 'current_test_run';
 
-  saveTestRun(testRun: TestRun): void {
-    localStorage.setItem(this.STORAGE_KEY, JSON.stringify(testRun));
+  constructor(private apiService: ApiService) {}
+
+  saveTestRun(testRun: TestRun): Observable<TestRun> {
+    if (testRun.id && !testRun.id.startsWith('temp_')) {
+      return this.apiService.put<TestRun>(`test-runs/${testRun.id}`, testRun);
+    } else {
+      return this.apiService.post<TestRun>('test-runs', testRun);
+    }
   }
 
-  getTestRun(): TestRun | null {
-    const data = localStorage.getItem(this.STORAGE_KEY);
-    return data ? JSON.parse(data) : null;
+  getTestRun(id: string): Observable<TestRun> {
+    return this.apiService.get<TestRun>(`test-runs/${id}`);
   }
 
-  clearTestRun(): void {
-    localStorage.removeItem(this.STORAGE_KEY);
+  getAllTestRuns(): Observable<TestRun[]> {
+    return this.apiService.get<TestRun[]>('test-runs');
   }
 
   updateStage(testRun: TestRun, stageIndex: number, stage: TestRunStage): void {
     testRun.stages[stageIndex] = stage;
-    this.saveTestRun(testRun);
   }
 }

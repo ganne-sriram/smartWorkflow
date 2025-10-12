@@ -12,9 +12,16 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
+    const token = localStorage.getItem('jwt_token');
+    const headers: { [key: string]: string } = {
       'Content-Type': 'application/json'
-    });
+    };
+    
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    
+    return new HttpHeaders(headers);
   }
 
   get<T>(endpoint: string): Observable<T> {

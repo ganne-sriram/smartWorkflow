@@ -104,20 +104,27 @@ export class AvailableWorkflowsComponent implements OnInit {
       }
     ];
 
-    const templates = this.templateService.getTemplates();
-    const templateWorkflows: Workflow[] = templates.map(template => ({
-      id: template.id,
-      name: template.name,
-      status: template.status,
-      stages: template.stages.length,
-      totalCases: 0,
-      openCases: 0,
-      resolvedCases: 0,
-      lastUpdated: new Date(template.lastUpdated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
-      type: 'template' as const
-    }));
+    this.templateService.getTemplates().subscribe({
+      next: (templates) => {
+        const templateWorkflows: Workflow[] = templates.map(template => ({
+          id: template.id,
+          name: template.name,
+          status: template.status,
+          stages: template.stages.length,
+          totalCases: 0,
+          openCases: 0,
+          resolvedCases: 0,
+          lastUpdated: new Date(template.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          type: 'template' as const
+        }));
 
-    this.workflows = [...templateWorkflows, ...regularWorkflows];
+        this.workflows = [...templateWorkflows, ...regularWorkflows];
+      },
+      error: (error) => {
+        console.error('Error loading templates:', error);
+        this.workflows = [...regularWorkflows];
+      }
+    });
   }
 
   openWorkflow(workflow: Workflow) {
