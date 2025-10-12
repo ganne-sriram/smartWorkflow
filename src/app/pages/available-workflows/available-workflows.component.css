@@ -42,6 +42,14 @@
   border-color: #3b82f6;
 }
 
+.workflow-card.template-card {
+  border: 2px solid #f59e0b;
+}
+
+.workflow-card.template-card:hover {
+  border-color: #d97706;
+}
+
 .workflow-header {
   display: flex;
   justify-content: space-between;

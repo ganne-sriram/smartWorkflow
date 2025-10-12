@@ -13,6 +13,8 @@ export class DesignProcessFlowComponent {
 
   navigateToWorkflow(type: string) {
     if (type === 'templates') {
+      this.router.navigate(['/template-library']);
+    } else if (type === 'create') {
       this.router.navigate(['/process-flow-info']);
     } else {
       console.log(`Navigate to ${type} workflow`);

@@ -5,10 +5,15 @@
   </div>
 
   <div class="workflows-grid">
-    <div class="workflow-card" *ngFor="let workflow of workflows" (click)="openWorkflow(workflow.id)">
+    <div class="workflow-card" 
+         [class.template-card]="workflow.type === 'template'"
+         *ngFor="let workflow of workflows" 
+         (click)="openWorkflow(workflow)">
       <div class="workflow-header">
         <h3>{{ workflow.name }}</h3>
-        <span class="workflow-badge" [class]="workflow.status">{{ workflow.status }}</span>
+        <span class="workflow-badge" [class]="workflow.status">
+          {{ workflow.type === 'template' ? 'TEMPLATE' : workflow.status }}
+        </span>
       </div>
       
       <div class="workflow-stats">

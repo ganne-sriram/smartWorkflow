@@ -1,0 +1,56 @@
+<div class="quality-score-container">
+  <div class="score-header">
+    <h3>{{ stageName }} - Checklist</h3>
+    <div class="score-subtitle">Case Quality Score</div>
+    <div class="score-count">{{ completed }}/{{ total }} Checklist Items Completed</div>
+  </div>
+
+  <div class="donut-chart-container">
+    <svg width="120" height="120" viewBox="0 0 120 120">
+      <circle
+        cx="60"
+        cy="60"
+        r="40"
+        fill="none"
+        stroke="#fee2e2"
+        stroke-width="20"
+      />
+      <circle
+        cx="60"
+        cy="60"
+        r="40"
+        fill="none"
+        stroke="#10b981"
+        stroke-width="20"
+        [attr.stroke-dasharray]="circumference"
+        [attr.stroke-dashoffset]="getStrokeDashoffset()"
+        transform="rotate(-90 60 60)"
+        class="progress-ring"
+      />
+      <text x="60" y="60" text-anchor="middle" dy=".3em" class="percentage-text">
+        {{ percentage }}%
+      </text>
+    </svg>
+  </div>
+
+  <div class="score-legend">
+    <div class="legend-item">
+      <div class="legend-color completed"></div>
+      <span>Completed</span>
+    </div>
+    <div class="legend-item">
+      <div class="legend-color remaining"></div>
+      <span>Remaining</span>
+    </div>
+  </div>
+
+  <div class="checklist-items">
+    <div *ngFor="let item of checklistItems" class="checklist-item" [class.selected]="isSelected(item)">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" [attr.stroke]="isSelected(item) ? '#10b981' : '#d1d5db'" stroke-width="2"/>
+        <path *ngIf="isSelected(item)" d="M8 12L11 15L16 9" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span>{{ item }}</span>
+    </div>
+  </div>
+</div>

@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DraftWorkflowService } from '../../services/draft-workflow.service';
+import { TemplateService } from '../../services/template.service';
 import { DraftWorkflow } from '../../models/draft-workflow.model';
+import { convertDraftToTemplate } from '../../models/template.model';
 
 @Component({
   selector: 'app-workflow-completion',
@@ -15,6 +17,7 @@ export class WorkflowCompletionComponent implements OnInit {
 
   constructor(
     private draftService: DraftWorkflowService,
+    private templateService: TemplateService,
     private router: Router
   ) {}
 
@@ -25,9 +28,20 @@ export class WorkflowCompletionComponent implements OnInit {
     }
   }
 
-  exploreWorkflow() {
+  saveAsTemplate() {
+    if (!this.workflow) return;
+    const template = convertDraftToTemplate(this.workflow);
+    this.templateService.saveTemplate(template);
     this.draftService.clearDraft();
     this.router.navigate(['/available-workflows']);
+  }
+
+  exploreWorkflow() {
+    if (!this.workflow) return;
+    const template = convertDraftToTemplate(this.workflow);
+    this.templateService.saveTemplate(template);
+    this.draftService.clearDraft();
+    this.router.navigate(['/test-runner', template.id]);
   }
 
   designAnother() {
