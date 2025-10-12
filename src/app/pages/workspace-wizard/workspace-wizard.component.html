@@ -1,0 +1,78 @@
+<div class="wizard-container" *ngIf="draft">
+  <div class="stepper">
+    <div *ngFor="let stage of draft.stages; let i = index" class="step" 
+         [class.active]="i === draft.currentStageIndex"
+         [class.completed]="i < draft.currentStageIndex"
+         (click)="goToStage(i)">
+      <div class="step-number">{{ i + 1 }}</div>
+      <div class="step-label">{{ stage.name }}</div>
+    </div>
+  </div>
+
+  <div class="wizard-content">
+    <div class="left-rail" [class.collapsed]="leftRailCollapsed">
+      <div class="rail-header">
+        <h3>{{ draft.name }}</h3>
+        <button class="collapse-btn" (click)="toggleLeftRail()">
+          {{ leftRailCollapsed ? '→' : '←' }}
+        </button>
+      </div>
+      <div class="stages-list" *ngIf="!leftRailCollapsed">
+        <div *ngFor="let stage of draft.stages; let i = index" 
+             class="stage-item"
+             [class.active]="i === draft.currentStageIndex"
+             (click)="goToStage(i)">
+          <div class="stage-name">{{ stage.name }}</div>
+          <div class="stage-counts">
+            <div># of Options Selected: {{ getStageOptionCount(i) }}</div>
+            <div># of Checklists Selected: {{ getStageChecklistCount(i) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="center-canvas">
+      <div class="stage-config" *ngIf="currentStage">
+        <div class="stage-name-field">
+          <label>Stage Name:</label>
+          <input type="text" [(ngModel)]="currentStage.name" class="stage-input">
+        </div>
+
+        <div class="options-section">
+          <h3>Options:</h3>
+          <div class="options-grid">
+            <div *ngFor="let option of availableOptions" class="option-item">
+              <label class="checkbox-label">
+                <input type="checkbox" 
+                       [checked]="isOptionSelected(option)"
+                       (change)="toggleOption(option)">
+                <span>{{ option }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="checklists-section">
+          <h3>Checklists:</h3>
+          <div class="checklists-grid">
+            <div *ngFor="let checklist of availableChecklists" class="checklist-item">
+              <label class="checkbox-label">
+                <input type="checkbox" 
+                       [checked]="isChecklistSelected(checklist)"
+                       (change)="toggleChecklist(checklist)">
+                <span>{{ checklist }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <button class="save-btn" (click)="saveProgress()">Save Progress</button>
+          <button class="proceed-btn" (click)="proceedToNextStage()">
+            {{ isLastStage() ? 'Confirm Workflow Completion' : 'Proceed to Next Stage' }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,32 @@
+<div class="completion-container" *ngIf="workflow">
+  <div class="stepper">
+    <div *ngFor="let stage of workflow.stages; let i = index" class="step completed">
+      <div class="step-number">{{ i + 1 }}</div>
+      <div class="step-label">{{ stage.name }}</div>
+    </div>
+  </div>
+
+  <div class="success-content">
+    <div class="success-icon">
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="#10b981" stroke-width="2"/>
+        <path d="M8 12L11 15L16 9" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    
+    <h1>Awesome! {{ workflow.name }} has been successfully digitized/designed.</h1>
+    <p>What do you want to do now?</p>
+
+    <div class="actions">
+      <button class="action-btn primary" (click)="exploreWorkflow()">
+        Explore this created workflow
+      </button>
+      <button class="action-btn secondary" (click)="designAnother()">
+        Design Another New Workflow
+      </button>
+      <button class="action-btn tertiary" (click)="goToDashboard()">
+        Go-to Core Ops Hub Dashboard
+      </button>
+    </div>
+  </div>
+</div>
