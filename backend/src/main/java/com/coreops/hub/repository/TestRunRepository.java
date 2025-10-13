@@ -1,13 +1,13 @@
 package com.coreops.hub.repository;
 
 import com.coreops.hub.model.TestRun;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface TestRunRepository extends MongoRepository<TestRun, String> {
-    List<TestRun> findByTemplateId(String templateId);
-    List<TestRun> findByUserId(String userId);
+public interface TestRunRepository extends JpaRepository<TestRun, Long> {
+    List<TestRun> findByTemplateId(Long templateId);
+    List<TestRun> findByUserId(Long userId);
 }

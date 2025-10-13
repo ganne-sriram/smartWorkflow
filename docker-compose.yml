@@ -1,17 +1,24 @@
 version: '3.8'
 
 services:
-  mongodb:
-    image: mongo:7
-    container_name: coreops-mongodb
+  oracle:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: coreops-oracle
     ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
+      - "1521:1521"
     environment:
-      MONGO_INITDB_DATABASE: coreops
+      ORACLE_PASSWORD: oracle123
+      APP_USER: coreops
+      APP_USER_PASSWORD: coreops123
+    volumes:
+      - oracle_data:/opt/oracle/oradata
     networks:
       - coreops-network
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   backend:
     build: ./backend
@@ -19,12 +26,14 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - mongodb
+      oracle:
+        condition: service_healthy
     environment:
-      SPRING_DATA_MONGODB_HOST: mongodb
-      SPRING_DATA_MONGODB_PORT: 27017
-      SPRING_DATA_MONGODB_DATABASE: coreops
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle:1521:XE
+      SPRING_DATASOURCE_USERNAME: coreops
+      SPRING_DATASOURCE_PASSWORD: coreops123
       JWT_SECRET: your-secret-key-change-in-production-make-it-at-least-256-bits-long
+      SPRING_PROFILES_ACTIVE: prod
     networks:
       - coreops-network
     restart: unless-stopped
@@ -41,7 +50,7 @@ services:
     restart: unless-stopped
 
 volumes:
-  mongodb_data:
+  oracle_data:
 
 networks:
   coreops-network:

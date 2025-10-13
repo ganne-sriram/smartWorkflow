@@ -1,33 +1,59 @@
 package com.coreops.hub.model;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "test_runs")
+@Entity
+@Table(name = "test_runs", indexes = {
+    @Index(name = "idx_testrun_template", columnList = "template_id"),
+    @Index(name = "idx_testrun_user", columnList = "user_id")
+})
 public class TestRun {
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_run_seq")
+    @SequenceGenerator(name = "test_run_seq", sequenceName = "test_run_seq", allocationSize = 1)
+    private Long id;
     
-    private String templateId;
+    @Column(name = "template_id", nullable = false)
+    private Long templateId;
     
+    @Column(name = "template_name", nullable = false, length = 100)
     private String templateName;
     
-    private Integer currentStageIndex;
+    @Column(name = "current_stage_index")
+    private Integer currentStageIndex = 0;
     
-    private List<TestRunStage> stages;
+    @OneToMany(mappedBy = "testRun", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private List<TestRunStage> stages = new ArrayList<>();
     
+    @Column(name = "started_at", nullable = false)
     private Instant startedAt;
     
+    @Column(name = "submitted_at")
     private Instant submittedAt;
     
-    private String userId;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+    
+    @Column(length = 20)
+    private String status = "RUNNING";
+    
+    public void addStage(TestRunStage stage) {
+        stages.add(stage);
+        stage.setTestRun(this);
+    }
+    
+    public void removeStage(TestRunStage stage) {
+        stages.remove(stage);
+        stage.setTestRun(null);
+    }
 }

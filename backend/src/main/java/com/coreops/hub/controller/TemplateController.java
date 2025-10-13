@@ -24,7 +24,7 @@ public class TemplateController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Template> getTemplateById(@PathVariable String id) {
+    public ResponseEntity<Template> getTemplateById(@PathVariable Long id) {
         return templateService.getTemplateById(id)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
@@ -39,21 +39,21 @@ public class TemplateController {
     
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('DESIGNER')")
-    public ResponseEntity<Template> updateTemplate(@PathVariable String id, @RequestBody Template template, Authentication auth) {
+    public ResponseEntity<Template> updateTemplate(@PathVariable Long id, @RequestBody Template template, Authentication auth) {
         String username = auth.getName();
         return ResponseEntity.ok(templateService.updateTemplate(id, template, username));
     }
     
     @PostMapping("/{id}/publish")
     @PreAuthorize("hasRole('DESIGNER')")
-    public ResponseEntity<Template> publishTemplate(@PathVariable String id, Authentication auth) {
+    public ResponseEntity<Template> publishTemplate(@PathVariable Long id, Authentication auth) {
         String username = auth.getName();
         return ResponseEntity.ok(templateService.publishTemplate(id, username));
     }
     
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('DESIGNER')")
-    public ResponseEntity<Void> deleteTemplate(@PathVariable String id) {
+    public ResponseEntity<Void> deleteTemplate(@PathVariable Long id) {
         templateService.deleteTemplate(id);
         return ResponseEntity.noContent().build();
     }
@@ -71,7 +71,7 @@ public class TemplateController {
     }
     
     @GetMapping("/{id}/export")
-    public ResponseEntity<?> exportTemplate(@PathVariable String id) {
+    public ResponseEntity<?> exportTemplate(@PathVariable Long id) {
         try {
             String json = templateService.exportTemplate(id);
             return ResponseEntity.ok(json);

@@ -22,7 +22,7 @@ public class TestRunController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<TestRun> getTestRunById(@PathVariable String id) {
+    public ResponseEntity<TestRun> getTestRunById(@PathVariable Long id) {
         return testRunService.getTestRunById(id)
             .map(ResponseEntity::ok)
             .orElse(ResponseEntity.notFound().build());
@@ -30,12 +30,12 @@ public class TestRunController {
     
     @PostMapping
     public ResponseEntity<TestRun> createTestRun(@RequestBody TestRun testRun, Authentication auth) {
-        String username = auth.getName();
-        return ResponseEntity.ok(testRunService.createTestRun(testRun, username));
+        Long userId = testRun.getUserId();
+        return ResponseEntity.ok(testRunService.createTestRun(testRun, userId));
     }
     
     @PutMapping("/{id}")
-    public ResponseEntity<TestRun> updateTestRun(@PathVariable String id, @RequestBody TestRun testRun) {
+    public ResponseEntity<TestRun> updateTestRun(@PathVariable Long id, @RequestBody TestRun testRun) {
         return ResponseEntity.ok(testRunService.updateTestRun(id, testRun));
     }
 }

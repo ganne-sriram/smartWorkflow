@@ -5,6 +5,7 @@ import com.coreops.hub.repository.TemplateRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class TemplateService {
     
     @Autowired
@@ -24,34 +26,28 @@ public class TemplateService {
         return templateRepository.findByStatusIn(Arrays.asList("ACTIVE", "DRAFT"));
     }
     
-    public Optional<Template> getTemplateById(String id) {
+    public Optional<Template> getTemplateById(Long id) {
         return templateRepository.findById(id);
     }
     
     public Template createTemplate(Template template, String username) {
         template.setStatus("DRAFT");
         template.setVersion(1);
-        template.setCreatedBy(username);
-        template.setCreatedAt(Instant.now());
-        template.setUpdatedBy(username);
-        template.setUpdatedAt(Instant.now());
         return templateRepository.save(template);
     }
     
-    public Template updateTemplate(String id, Template template, String username) {
+    public Template updateTemplate(Long id, Template template, String username) {
         Template existing = templateRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Template not found"));
         
         existing.setName(template.getName());
         existing.setObjective(template.getObjective());
         existing.setStages(template.getStages());
-        existing.setUpdatedBy(username);
-        existing.setUpdatedAt(Instant.now());
         
         return templateRepository.save(existing);
     }
     
-    public Template publishTemplate(String id, String username) {
+    public Template publishTemplate(Long id, String username) {
         Template template = templateRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Template not found"));
         
@@ -61,13 +57,10 @@ public class TemplateService {
             template.setVersion(template.getVersion() + 1);
         }
         
-        template.setUpdatedBy(username);
-        template.setUpdatedAt(Instant.now());
-        
         return templateRepository.save(template);
     }
     
-    public void deleteTemplate(String id) {
+    public void deleteTemplate(Long id) {
         templateRepository.deleteById(id);
     }
     
@@ -76,14 +69,10 @@ public class TemplateService {
         template.setId(null);
         template.setStatus("DRAFT");
         template.setVersion(1);
-        template.setCreatedBy(username);
-        template.setCreatedAt(Instant.now());
-        template.setUpdatedBy(username);
-        template.setUpdatedAt(Instant.now());
         return templateRepository.save(template);
     }
     
-    public String exportTemplate(String id) throws Exception {
+    public String exportTemplate(Long id) throws Exception {
         Template template = templateRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Template not found"));
         return objectMapper.writeValueAsString(template);
