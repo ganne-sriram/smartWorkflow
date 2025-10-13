@@ -1,5 +1,6 @@
 package com.coreops.hub.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ public class TestRunStage {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "test_run_id", nullable = false)
+    @JsonIgnore
     private TestRun testRun;
     
     @Column(nullable = false, length = 100)
