@@ -1,6 +1,8 @@
 package com.coreops.hub.service;
 
+import com.coreops.hub.model.Stage;
 import com.coreops.hub.model.Template;
+import com.coreops.hub.model.TemplateStage;
 import com.coreops.hub.repository.TemplateRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +36,25 @@ public class TemplateService {
     public Template createTemplate(Template template, String username) {
         template.setStatus("DRAFT");
         template.setVersion(1);
+        
+        if (template.getStageDTOs() != null && !template.getStageDTOs().isEmpty()) {
+            List<Stage> stageEntities = new ArrayList<>();
+            int stageNumber = 1;
+            
+            for (TemplateStage stageDTO : template.getStageDTOs()) {
+                Stage stage = new Stage();
+                stage.setTemplate(template);
+                stage.setStageNumber(stageNumber++);
+                stage.setName(stageDTO.getName());
+                stage.setAvailableOptions(stageDTO.getAvailableOptions() != null ? stageDTO.getAvailableOptions() : new ArrayList<>());
+                stage.setAvailableChecklists(stageDTO.getAvailableChecklists() != null ? stageDTO.getAvailableChecklists() : new ArrayList<>());
+                stage.setStageSteps(new ArrayList<>());
+                stageEntities.add(stage);
+            }
+            
+            template.setStages(stageEntities);
+        }
+        
         return templateRepository.save(template);
     }
     
@@ -42,7 +64,22 @@ public class TemplateService {
         
         existing.setName(template.getName());
         existing.setObjective(template.getObjective());
-        existing.setStages(template.getStages());
+        
+        if (template.getStageDTOs() != null && !template.getStageDTOs().isEmpty()) {
+            existing.getStages().clear();
+            
+            int stageNumber = 1;
+            for (TemplateStage stageDTO : template.getStageDTOs()) {
+                Stage stage = new Stage();
+                stage.setTemplate(existing);
+                stage.setStageNumber(stageNumber++);
+                stage.setName(stageDTO.getName());
+                stage.setAvailableOptions(stageDTO.getAvailableOptions() != null ? stageDTO.getAvailableOptions() : new ArrayList<>());
+                stage.setAvailableChecklists(stageDTO.getAvailableChecklists() != null ? stageDTO.getAvailableChecklists() : new ArrayList<>());
+                stage.setStageSteps(new ArrayList<>());
+                existing.getStages().add(stage);
+            }
+        }
         
         return templateRepository.save(existing);
     }

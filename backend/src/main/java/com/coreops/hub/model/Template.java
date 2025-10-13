@@ -1,5 +1,7 @@
 package com.coreops.hub.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -15,6 +17,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
@@ -41,7 +44,11 @@ public class Template {
     private String objective;
     
     @OneToMany(mappedBy = "template", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Stage> stages = new ArrayList<>();
+    
+    @Transient
+    private List<TemplateStage> stageDTOs = new ArrayList<>();
     
     @Column(nullable = false, length = 20)
     private String status = "DRAFT";
@@ -72,5 +79,26 @@ public class Template {
     public void removeStage(Stage stage) {
         stages.remove(stage);
         stage.setTemplate(null);
+    }
+    
+    @JsonProperty("stages")
+    public List<TemplateStage> getStageDTOs() {
+        if (stageDTOs == null || stageDTOs.isEmpty()) {
+            return stages.stream()
+                .map(stage -> {
+                    TemplateStage dto = new TemplateStage();
+                    dto.setName(stage.getName());
+                    dto.setAvailableOptions(stage.getAvailableOptions());
+                    dto.setAvailableChecklists(stage.getAvailableChecklists());
+                    return dto;
+                })
+                .collect(Collectors.toList());
+        }
+        return stageDTOs;
+    }
+    
+    @JsonProperty("stages")
+    public void setStageDTOs(List<TemplateStage> stageDTOs) {
+        this.stageDTOs = stageDTOs;
     }
 }
