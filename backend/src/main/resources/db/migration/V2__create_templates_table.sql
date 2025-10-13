@@ -4,12 +4,12 @@ CREATE TABLE templates (
     id NUMBER(19) PRIMARY KEY,
     name VARCHAR2(100) NOT NULL,
     objective CLOB NOT NULL,
-    status VARCHAR2(20) NOT NULL DEFAULT 'DRAFT',
-    version NUMBER(10) NOT NULL DEFAULT 1,
+    status VARCHAR2(20) DEFAULT 'DRAFT' NOT NULL,
+    version NUMBER(10) DEFAULT 1 NOT NULL,
     created_by VARCHAR2(50) NOT NULL,
-    created_at TIMESTAMP(6) NOT NULL,
+    created_at TIMESTAMP(6) WITH TIME ZONE NOT NULL,
     updated_by VARCHAR2(50),
-    updated_at TIMESTAMP(6)
+    updated_at TIMESTAMP(6) WITH TIME ZONE
 );
 
 CREATE INDEX idx_template_status ON templates(status);

@@ -29,7 +29,7 @@ services:
       oracle:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle:1521:XE
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@oracle:1521/XEPDB1
       SPRING_DATASOURCE_USERNAME: coreops
       SPRING_DATASOURCE_PASSWORD: coreops123
       JWT_SECRET: your-secret-key-change-in-production-make-it-at-least-256-bits-long
