@@ -1,17 +1,16 @@
 import { DraftWorkflow } from './draft-workflow.model';
 
 export interface Template {
-  id: string;
+  id?: string | null;
   name: string;
   objective: string;
   stages: TemplateStage[];
   status: 'ACTIVE' | 'DRAFT' | 'ARCHIVED';
   version: number;
   createdBy?: string;
-  createdAt: Date;
+  createdAt?: Date;
   updatedBy?: string;
-  updatedAt: Date;
-  lastUpdated: Date;
+  updatedAt?: Date;
 }
 
 export interface TemplateStage {
@@ -39,7 +38,6 @@ export interface TestRunStage {
 
 export function convertDraftToTemplate(draft: DraftWorkflow): Template {
   return {
-    id: '',
     name: draft.name,
     objective: draft.objective,
     stages: draft.stages.map(stage => ({
@@ -48,17 +46,14 @@ export function convertDraftToTemplate(draft: DraftWorkflow): Template {
       availableChecklists: [...stage.selectedChecklists]
     })),
     status: 'DRAFT',
-    version: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    lastUpdated: new Date()
+    version: 1
   };
 }
 
 export function createTestRunFromTemplate(template: Template): TestRun {
   return {
     id: 'temp_' + Date.now().toString(),
-    templateId: template.id,
+    templateId: template.id || '',
     templateName: template.name,
     currentStageIndex: 0,
     stages: template.stages.map(stage => ({

@@ -1,7 +1,10 @@
 package com.coreops.hub.model;
 
+import com.coreops.hub.config.LongDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -27,11 +30,13 @@ import java.util.stream.Collectors;
     @Index(name = "idx_template_status", columnList = "status"),
     @Index(name = "idx_template_name", columnList = "name")
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 @EntityListeners(AuditingEntityListener.class)
 public class Template {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "template_seq")
     @SequenceGenerator(name = "template_seq", sequenceName = "template_seq", allocationSize = 1)
+    @JsonDeserialize(using = LongDeserializer.class)
     private Long id;
     
     @NotBlank(message = "Template name is required")

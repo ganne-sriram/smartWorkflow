@@ -1,5 +1,8 @@
 package com.coreops.hub.model;
 
+import com.coreops.hub.config.LongDeserializer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,10 +20,12 @@ import java.util.List;
     @Index(name = "idx_testrun_template", columnList = "template_id"),
     @Index(name = "idx_testrun_user", columnList = "user_id")
 })
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TestRun {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "test_run_seq")
     @SequenceGenerator(name = "test_run_seq", sequenceName = "test_run_seq", allocationSize = 1)
+    @JsonDeserialize(using = LongDeserializer.class)
     private Long id;
     
     @Column(name = "template_id", nullable = false)
