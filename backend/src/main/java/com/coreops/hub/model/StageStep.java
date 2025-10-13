@@ -1,5 +1,6 @@
 package com.coreops.hub.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -22,6 +23,7 @@ public class StageStep {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "stage_id", nullable = false)
+    @JsonIgnore
     private Stage stage;
     
     @Column(name = "step_number", nullable = false)
