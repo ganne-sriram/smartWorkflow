@@ -1,10 +1,16 @@
 .login-container {
   min-height: 100vh;
   display: flex;
+  flex-direction: row;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.login-section {
+  flex: 0 0 40%;
+  display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .login-card {
@@ -115,4 +121,131 @@
 
 .login-footer strong {
   color: #374151;
+}
+
+.content-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 3rem;
+  color: white;
+}
+
+.content-wrapper {
+  max-width: 600px;
+}
+
+.content-heading {
+  font-size: 3.5rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 1.5rem 0;
+  color: white;
+}
+
+.content-description {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  margin: 0 0 2rem 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.content-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.content-btn {
+  padding: 0.875rem 1.75rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.content-btn.primary {
+  background: #1f2937;
+  color: white;
+}
+
+.content-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.content-btn.secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.content-btn.secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.content-features {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.feature-item h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+  color: white;
+}
+
+.feature-item p {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+@media (max-width: 968px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-section {
+    flex: none;
+    padding: 2rem 1rem;
+  }
+
+  .content-section {
+    padding: 3rem 2rem;
+  }
+
+  .content-heading {
+    font-size: 2.5rem;
+  }
+
+  .content-buttons {
+    flex-direction: column;
+  }
+
+  .content-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .content-heading {
+    font-size: 2rem;
+  }
+
+  .content-description {
+    font-size: 1rem;
+  }
+
+  .login-card {
+    padding: 2rem;
+  }
 }
