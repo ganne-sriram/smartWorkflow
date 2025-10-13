@@ -47,6 +47,10 @@ export class WorkflowCompletionComponent implements OnInit {
     const template = convertDraftToTemplate(this.workflow);
     this.templateService.saveTemplate(template).subscribe({
       next: (savedTemplate) => {
+        if (!savedTemplate.id) {
+          console.error('Error: Template ID is missing');
+          return;
+        }
         this.templateService.publishTemplate(savedTemplate.id).subscribe({
           next: (publishedTemplate) => {
             this.draftService.clearDraft();

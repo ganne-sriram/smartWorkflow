@@ -107,14 +107,14 @@ export class AvailableWorkflowsComponent implements OnInit {
     this.templateService.getTemplates().subscribe({
       next: (templates) => {
         const templateWorkflows: Workflow[] = templates.map(template => ({
-          id: template.id,
+          id: template.id || '',
           name: template.name,
           status: template.status,
           stages: template.stages.length,
           totalCases: 0,
           openCases: 0,
           resolvedCases: 0,
-          lastUpdated: new Date(template.updatedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+          lastUpdated: new Date(template.updatedAt || new Date()).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
           type: 'template' as const
         }));
 
