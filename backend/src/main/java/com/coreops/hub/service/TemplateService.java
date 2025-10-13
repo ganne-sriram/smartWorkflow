@@ -30,7 +30,7 @@ public class TemplateService {
     }
     
     public Optional<Template> getTemplateById(Long id) {
-        return templateRepository.findById(id);
+        return templateRepository.findByIdWithStages(id);
     }
     
     public Template createTemplate(Template template, String username) {

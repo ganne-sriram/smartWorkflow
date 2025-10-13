@@ -45,12 +45,12 @@ public class Stage {
     @OneToMany(mappedBy = "stage", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<StageStep> stageSteps = new ArrayList<>();
     
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "stage_available_options", joinColumns = @JoinColumn(name = "stage_id"))
     @Column(name = "option_value")
     private List<String> availableOptions = new ArrayList<>();
-    
-    @ElementCollection
+
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "stage_available_checklists", joinColumns = @JoinColumn(name = "stage_id"))
     @Column(name = "checklist_value")
     private List<String> availableChecklists = new ArrayList<>();

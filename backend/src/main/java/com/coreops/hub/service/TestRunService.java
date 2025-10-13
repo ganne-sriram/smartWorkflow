@@ -21,6 +21,12 @@ public class TestRunService {
         testRun.setUserId(userId);
         testRun.setStartedAt(Instant.now());
         testRun.setStatus("RUNNING");
+
+        // Set bidirectional relationship for stages
+        if (testRun.getStages() != null) {
+            testRun.getStages().forEach(stage -> stage.setTestRun(testRun));
+        }
+
         return testRunRepository.save(testRun);
     }
     

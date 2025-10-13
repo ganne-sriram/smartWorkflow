@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { DraftWorkflowService } from '../../services/draft-workflow.service';
 import { TemplateService } from '../../services/template.service';
+import { NotificationService } from '../../services/notification.service';
 import { DraftWorkflow } from '../../models/draft-workflow.model';
 import { convertDraftToTemplate } from '../../models/template.model';
 
@@ -18,6 +19,7 @@ export class WorkflowCompletionComponent implements OnInit {
   constructor(
     private draftService: DraftWorkflowService,
     private templateService: TemplateService,
+    private notificationService: NotificationService,
     private router: Router
   ) {}
 
@@ -33,11 +35,13 @@ export class WorkflowCompletionComponent implements OnInit {
     const template = convertDraftToTemplate(this.workflow);
     this.templateService.saveTemplate(template).subscribe({
       next: (savedTemplate) => {
+        this.notificationService.showSuccess(`Template "${savedTemplate.name}" created successfully!`);
         this.draftService.clearDraft();
         this.router.navigate(['/available-workflows']);
       },
       error: (error) => {
         console.error('Error saving template:', error);
+        this.notificationService.showError('Failed to create template. Please try again.');
       }
     });
   }
@@ -49,8 +53,10 @@ export class WorkflowCompletionComponent implements OnInit {
       next: (savedTemplate) => {
         if (!savedTemplate.id) {
           console.error('Error: Template ID is missing');
+          this.notificationService.showError('Failed to create template. Template ID is missing.');
           return;
         }
+        this.notificationService.showSuccess(`Template "${savedTemplate.name}" created successfully!`);
         this.templateService.publishTemplate(savedTemplate.id).subscribe({
           next: (publishedTemplate) => {
             this.draftService.clearDraft();
@@ -58,11 +64,13 @@ export class WorkflowCompletionComponent implements OnInit {
           },
           error: (error) => {
             console.error('Error publishing template:', error);
+            this.notificationService.showError('Failed to publish template. Please try again.');
           }
         });
       },
       error: (error) => {
         console.error('Error saving template:', error);
+        this.notificationService.showError('Failed to create template. Please try again.');
       }
     });
   }
