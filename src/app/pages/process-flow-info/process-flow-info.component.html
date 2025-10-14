@@ -1,39 +1,66 @@
 <div class="page-container">
   <div class="form-container">
     <h1 class="page-title">Process Flow Information</h1>
-    
+
     <form class="process-flow-form">
       <div class="form-group">
         <label for="flowName">What is the name of the process flow?</label>
-        <input 
-          type="text" 
-          id="flowName" 
+        <input
+          type="text"
+          id="flowName"
           class="form-input"
+          [class.error]="nameError"
           [(ngModel)]="processFlowName"
           name="flowName"
+          (input)="validateName()"
+          (blur)="validateName()"
           placeholder="">
+        <div class="error-message" *ngIf="nameError">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ nameError }}
+        </div>
       </div>
 
       <div class="form-group">
         <label for="flowObjective">What is the objective of the process flow?</label>
-        <textarea 
-          id="flowObjective" 
+        <textarea
+          id="flowObjective"
           class="form-textarea"
+          [class.error]="objectiveError"
           [(ngModel)]="processFlowObjective"
           name="flowObjective"
+          (input)="validateObjective()"
+          (blur)="validateObjective()"
           rows="4"
           placeholder=""></textarea>
+        <div class="error-message" *ngIf="objectiveError">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ objectiveError }}
+        </div>
       </div>
 
       <div class="form-group">
         <label for="numberOfStages">How many stages are going to be there in the process flow?</label>
-        <input 
-          type="text" 
-          id="numberOfStages" 
+        <input
+          type="text"
+          id="numberOfStages"
           class="form-input"
+          [class.error]="stagesError"
           [(ngModel)]="numberOfStages"
           name="numberOfStages"
+          (input)="validateStages()"
+          (blur)="validateStages()"
           placeholder="">
+        <div class="error-message" *ngIf="stagesError">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 8V12M12 16H12.01M21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ stagesError }}
+        </div>
       </div>
 
       <div class="form-actions">

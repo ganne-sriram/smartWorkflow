@@ -84,4 +84,8 @@ export class WorkflowCompletionComponent implements OnInit {
     this.draftService.clearDraft();
     this.router.navigate(['/available-workflows']);
   }
+
+  goBack() {
+    this.router.navigate(['/workspace-wizard']);
+  }
 }

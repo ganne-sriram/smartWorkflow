@@ -2,10 +2,24 @@
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
+  background: transparent;
 }
 
 .page-header {
   margin-bottom: 3rem;
+  position: relative;
+  padding-bottom: 1.5rem;
+}
+
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-gradient-start), var(--primary-gradient-end));
+  border-radius: 2px;
 }
 
 .workflows-section {
@@ -20,57 +34,98 @@
 }
 
 .section-header h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 2.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
   margin: 0;
+  letter-spacing: -0.02em;
 }
 
 .section-count {
-  padding: 0.25rem 0.75rem;
-  background: #3b82f6;
+  padding: 0.5625rem 1.25rem;
+  background: linear-gradient(135deg, var(--primary-gradient-start), var(--primary-gradient-end));
   color: white;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
+  border-radius: 1.5rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 .section-badge {
-  padding: 0.25rem 0.75rem;
-  background: #fbbf24;
-  color: #78350f;
-  border-radius: 1rem;
-  font-size: 0.875rem;
-  font-weight: 600;
+  padding: 0.5625rem 1.25rem;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+  border-radius: 1.5rem;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
 }
 
 .page-header h1 {
-  font-size: 2rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 0.5rem;
+  font-size: 3.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.875rem;
+  letter-spacing: -0.03em;
 }
 
 .subtitle {
-  color: #6b7280;
-  font-size: 1rem;
+  color: var(--text-secondary);
+  font-size: 1.375rem;
+  font-weight: 500;
+  line-height: 1.6;
 }
 
 .workflows-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
 }
 
 .workflow-card {
   position: relative;
-  background: white;
-  border-radius: 0.75rem;
+  background:
+    linear-gradient(180deg,
+      #ffffff 0%,
+      #f0f5f9 8%,
+      #d4e1eb 16%,
+      #a8c5d9 24%,
+      #7ca9c7 32%,
+      #5088b0 40%,
+      #2d6a98 50%,
+      #194d7d 60%,
+      #0d3b66 75%,
+      #003B70 100%);
+  border-radius: 1rem;
   padding: 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    0 8px 20px rgba(0, 59, 112, 0.35),
+    0 3px 10px rgba(0, 59, 112, 0.25),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15);
   cursor: pointer;
-  transition: all 0.3s;
-  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  min-height: 400px;
+}
+
+.workflow-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    linear-gradient(135deg,
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 40%,
+      rgba(0, 0, 0, 0.1) 100%);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .menu-button {
@@ -87,6 +142,8 @@
   transition: all 0.2s;
   padding: 0;
   flex-shrink: 0;
+  position: relative;
+  z-index: 60;
 }
 
 .menu-button:hover {
@@ -104,7 +161,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  z-index: 20;
+  z-index: 100;
   min-width: 140px;
   overflow: hidden;
 }
@@ -137,17 +194,29 @@
 }
 
 .workflow-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-  border-color: #3b82f6;
+  transform: translateY(-8px);
+  box-shadow:
+    0 16px 40px rgba(0, 59, 112, 0.4),
+    0 8px 20px rgba(0, 59, 112, 0.3),
+    0 0 0 3px rgba(102, 126, 234, 0.5),
+    inset 0 2px 4px rgba(255, 255, 255, 0.5),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.15);
+  border-color: rgba(102, 126, 234, 0.6);
 }
 
 .workflow-card.template-card {
-  border: 2px solid #f59e0b;
+  border: 2px solid var(--warning-color);
+  box-shadow:
+    0 4px 12px rgba(245, 158, 11, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
 }
 
 .workflow-card.template-card:hover {
   border-color: #d97706;
+  box-shadow:
+    0 12px 30px rgba(245, 158, 11, 0.2),
+    0 0 0 2px #d97706,
+    inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 
 .workflow-header {
@@ -156,15 +225,21 @@
   align-items: start;
   margin-bottom: 1.5rem;
   gap: 1rem;
+  position: relative;
+  z-index: auto;
+  min-height: 60px;
 }
 
 .workflow-header h3 {
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 1.375rem;
+  font-weight: 800;
   color: #1f2937;
   flex: 1;
   min-width: 0;
   word-wrap: break-word;
+  letter-spacing: -0.01em;
+  line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
 }
 
 .header-right {
@@ -173,6 +248,7 @@
   align-items: center;
   gap: 0.5rem;
   flex-shrink: 0;
+  z-index: 50;
 }
 
 .workflow-badge {
@@ -202,7 +278,9 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: auto;
+  position: relative;
+  z-index: auto;
 }
 
 .stat {
@@ -210,12 +288,13 @@
   align-items: center;
   gap: 0.75rem;
   padding: 0.75rem;
-  background: #f9fafb;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 0.5rem;
+  backdrop-filter: blur(5px);
 }
 
 .stat svg {
-  color: #6b7280;
+  color: rgba(255, 255, 255, 0.9);
   flex-shrink: 0;
 }
 
@@ -225,26 +304,32 @@
 }
 
 .stat-value {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
 .stat-label {
-  font-size: 0.75rem;
-  color: #6b7280;
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.85);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 600;
 }
 
 .workflow-footer {
   padding-top: 1rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  z-index: auto;
+  margin-top: auto;
 }
 
 .workflow-date {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 768px) {
