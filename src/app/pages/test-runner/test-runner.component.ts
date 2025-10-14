@@ -54,7 +54,19 @@ export class TestRunnerComponent implements OnInit {
 
   loadCurrentStage() {
     if (this.testRun) {
-      this.currentStage = { ...this.testRun.stages[this.testRun.currentStageIndex] };
+      const stage = this.testRun.stages[this.testRun.currentStageIndex];
+      console.log('Loading stage:', this.testRun.currentStageIndex, stage);
+
+      // Deep copy the stage to avoid reference issues
+      this.currentStage = {
+        name: stage.name,
+        availableOptions: [...stage.availableOptions],
+        availableChecklists: [...stage.availableChecklists],
+        selectedOptions: [...stage.selectedOptions],
+        selectedChecklists: [...stage.selectedChecklists]
+      };
+
+      console.log('Current stage loaded:', this.currentStage);
     }
   }
 
@@ -96,10 +108,11 @@ export class TestRunnerComponent implements OnInit {
 
   goBack() {
     if (!this.testRun || !this.currentStage) return;
-    
+
     this.testRunService.updateStage(this.testRun, this.testRun.currentStageIndex, this.currentStage);
-    
+
     if (this.testRun.currentStageIndex > 0) {
+      // Go to previous stage
       this.testRun.currentStageIndex--;
       this.testRunService.saveTestRun(this.testRun).subscribe({
         next: (updated) => {
@@ -110,6 +123,9 @@ export class TestRunnerComponent implements OnInit {
           console.error('Error updating test run:', error);
         }
       });
+    } else {
+      // At first stage, navigate back to home page
+      this.router.navigate(['/available-workflows']);
     }
   }
 

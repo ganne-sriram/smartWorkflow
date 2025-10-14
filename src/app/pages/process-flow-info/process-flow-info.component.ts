@@ -78,4 +78,9 @@ export class ProcessFlowInfoComponent {
       this.router.navigate(['/workspace-wizard']);
     }
   }
+
+  goBack() {
+    this.router.navigate(['/design-process-flow']);
+  }
+  
 }

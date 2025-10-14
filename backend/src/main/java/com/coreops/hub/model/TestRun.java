@@ -37,7 +37,7 @@ public class TestRun {
     @Column(name = "current_stage_index")
     private Integer currentStageIndex = 0;
     
-    @OneToMany(mappedBy = "testRun", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "testRun", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<TestRunStage> stages = new ArrayList<>();
     
     @Column(name = "started_at", nullable = false)

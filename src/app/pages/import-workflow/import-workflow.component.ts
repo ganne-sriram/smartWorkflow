@@ -14,4 +14,8 @@ export class ImportWorkflowComponent {
   handleImportOption(type: string) {
     console.log(`Import option selected: ${type}`);
   }
+
+  goBack() {
+    this.router.navigate(['/design-process-flow']);
+  }
 }

@@ -1,6 +1,7 @@
 package com.coreops.hub.service;
 
 import com.coreops.hub.model.TestRun;
+import com.coreops.hub.model.TestRunStage;
 import com.coreops.hub.repository.TestRunRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,15 +42,41 @@ public class TestRunService {
     public TestRun updateTestRun(Long id, TestRun testRun) {
         TestRun existing = testRunRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("TestRun not found"));
-        
+
         existing.setCurrentStageIndex(testRun.getCurrentStageIndex());
-        existing.setStages(testRun.getStages());
-        
+
+        // Update stages individually instead of replacing the entire list
+        if (testRun.getStages() != null && !testRun.getStages().isEmpty()) {
+            List<TestRunStage> existingStages = existing.getStages();
+            List<TestRunStage> incomingStages = testRun.getStages();
+
+            // Update each stage by index
+            for (int i = 0; i < Math.min(existingStages.size(), incomingStages.size()); i++) {
+                TestRunStage existingStage = existingStages.get(i);
+                TestRunStage incomingStage = incomingStages.get(i);
+
+                // Update ElementCollections by clearing and re-adding (required for JPA)
+                if (incomingStage.getSelectedOptions() != null) {
+                    existingStage.getSelectedOptions().clear();
+                    existingStage.getSelectedOptions().addAll(incomingStage.getSelectedOptions());
+                }
+
+                if (incomingStage.getSelectedChecklists() != null) {
+                    existingStage.getSelectedChecklists().clear();
+                    existingStage.getSelectedChecklists().addAll(incomingStage.getSelectedChecklists());
+                }
+
+                if (incomingStage.getStatus() != null) {
+                    existingStage.setStatus(incomingStage.getStatus());
+                }
+            }
+        }
+
         if (testRun.getSubmittedAt() != null) {
             existing.setSubmittedAt(testRun.getSubmittedAt());
             existing.setStatus("COMPLETED");
         }
-        
+
         return testRunRepository.save(existing);
     }
 }

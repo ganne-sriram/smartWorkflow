@@ -11,7 +11,10 @@ export class TestRunService {
   constructor(private apiService: ApiService) {}
 
   saveTestRun(testRun: TestRun): Observable<TestRun> {
-    if (testRun.id && !testRun.id.startsWith('temp_')) {
+    // Convert id to string if it's not already
+    const idString = testRun.id ? String(testRun.id) : '';
+
+    if (testRun.id && !idString.startsWith('temp_')) {
       return this.apiService.put<TestRun>(`test-runs/${testRun.id}`, testRun);
     } else {
       return this.apiService.post<TestRun>('test-runs', testRun);
@@ -27,6 +30,13 @@ export class TestRunService {
   }
 
   updateStage(testRun: TestRun, stageIndex: number, stage: TestRunStage): void {
-    testRun.stages[stageIndex] = stage;
+    // Deep copy the stage to avoid reference issues
+    testRun.stages[stageIndex] = {
+      name: stage.name,
+      availableOptions: [...stage.availableOptions],
+      availableChecklists: [...stage.availableChecklists],
+      selectedOptions: [...stage.selectedOptions],
+      selectedChecklists: [...stage.selectedChecklists]
+    };
   }
 }

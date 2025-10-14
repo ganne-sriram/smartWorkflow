@@ -32,7 +32,7 @@ export class LoginComponent {
 
     this.authService.login(this.username, this.password).subscribe({
       next: () => {
-        this.router.navigate(['/design-process-flow']);
+        this.router.navigate(['/available-workflows']);
       },
       error: (error) => {
         this.isLoading = false;
