@@ -28,22 +28,22 @@ public class TestRunStage {
     @Column(nullable = false, length = 100)
     private String name;
     
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "test_run_stage_available_options", joinColumns = @JoinColumn(name = "test_run_stage_id"))
     @Column(name = "option_value")
     private List<String> availableOptions = new ArrayList<>();
     
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "test_run_stage_available_checklists", joinColumns = @JoinColumn(name = "test_run_stage_id"))
     @Column(name = "checklist_value")
     private List<String> availableChecklists = new ArrayList<>();
     
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "test_run_stage_selected_options", joinColumns = @JoinColumn(name = "test_run_stage_id"))
     @Column(name = "option_value")
     private List<String> selectedOptions = new ArrayList<>();
     
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "test_run_stage_selected_checklists", joinColumns = @JoinColumn(name = "test_run_stage_id"))
     @Column(name = "checklist_value")
     private List<String> selectedChecklists = new ArrayList<>();
