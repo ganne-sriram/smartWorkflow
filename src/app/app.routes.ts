@@ -7,6 +7,7 @@ import { WorkflowCompletionComponent } from './pages/workflow-completion/workflo
 import { TestRunnerComponent } from './pages/test-runner/test-runner.component';
 import { TestSummaryComponent } from './pages/test-summary/test-summary.component';
 import { TemplateLibraryComponent } from './pages/template-library/template-library.component';
+import { ImportWorkflowComponent } from './pages/import-workflow/import-workflow.component';
 import { LoginComponent } from './pages/login/login.component';
 import { authGuard } from './guards/auth.guard';
 
@@ -20,5 +21,6 @@ export const routes: Routes = [
   { path: 'workflow-completion', component: WorkflowCompletionComponent, canActivate: [authGuard] },
   { path: 'test-runner/:templateId', component: TestRunnerComponent, canActivate: [authGuard] },
   { path: 'test-summary/:testRunId', component: TestSummaryComponent, canActivate: [authGuard] },
-  { path: 'template-library', component: TemplateLibraryComponent, canActivate: [authGuard] }
+  { path: 'template-library', component: TemplateLibraryComponent, canActivate: [authGuard] },
+  { path: 'import-workflow', component: ImportWorkflowComponent, canActivate: [authGuard] }
 ];
