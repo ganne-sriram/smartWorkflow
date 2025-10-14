@@ -39,7 +39,12 @@ export class WorkspaceWizardComponent implements OnInit {
 
   loadCurrentStage() {
     if (this.draft) {
-      this.currentStage = { ...this.draft.stages[this.draft.currentStageIndex] };
+      const stage = this.draft.stages[this.draft.currentStageIndex];
+      this.currentStage = {
+        name: stage.name,
+        selectedOptions: [...stage.selectedOptions],
+        selectedChecklists: [...stage.selectedChecklists]
+      };
     }
   }
 

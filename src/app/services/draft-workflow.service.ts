@@ -42,7 +42,11 @@ export class DraftWorkflowService {
   }
 
   updateStage(draft: DraftWorkflow, stageIndex: number, stage: Stage): void {
-    draft.stages[stageIndex] = stage;
+    draft.stages[stageIndex] = {
+      name: stage.name,
+      selectedOptions: [...stage.selectedOptions],
+      selectedChecklists: [...stage.selectedChecklists]
+    };
     this.saveDraft(draft);
   }
 }
