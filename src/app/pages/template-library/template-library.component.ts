@@ -15,6 +15,7 @@ import { DraftWorkflow } from '../../models/draft-workflow.model';
 })
 export class TemplateLibraryComponent implements OnInit {
   templates: Template[] = [];
+  activeMenuId: string | null | undefined = null;
 
   constructor(
     private templateService: TemplateService,
@@ -54,8 +55,14 @@ export class TemplateLibraryComponent implements OnInit {
     this.router.navigate(['/workspace-wizard']);
   }
 
+  toggleMenu(event: Event, template: Template) {
+    event.stopPropagation();
+    this.activeMenuId = this.activeMenuId === template.id ? null : template.id;
+  }
+
   deleteTemplate(event: Event, template: Template) {
     event.stopPropagation(); // Prevent card click
+    this.activeMenuId = null; // Close menu
 
     const templateName = template.name;
     if (confirm(`Are you sure you want to delete "${templateName}"?`)) {

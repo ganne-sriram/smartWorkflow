@@ -555,10 +555,18 @@
   border-bottom: 1px solid #f3f4f6;
   cursor: pointer;
   transition: all 0.2s;
+  user-select: none;
+  position: relative;
+  z-index: 1;
 }
 
 .search-result-item:hover {
   background-color: #f9fafb;
+}
+
+.search-result-item:active {
+  background-color: #f3f4f6;
+  transform: scale(0.99);
 }
 
 .search-result-item:last-child {
@@ -573,6 +581,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 }
 
 .search-result-icon.template-icon {
@@ -588,6 +597,7 @@
 .search-result-content {
   flex: 1;
   min-width: 0;
+  pointer-events: none;
 }
 
 .search-result-header {

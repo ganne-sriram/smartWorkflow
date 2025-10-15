@@ -188,16 +188,17 @@ export class HeaderComponent implements OnInit, OnDestroy {
     const lowerQuery = query.toLowerCase().trim();
     this.searchResults = [];
 
-    // Search templates
+    // Search templates - only include those with valid IDs
     const matchingTemplates = this.templates.filter(template =>
-      template.name.toLowerCase().includes(lowerQuery) ||
-      template.objective.toLowerCase().includes(lowerQuery)
+      template.id && // Must have a valid ID
+      (template.name.toLowerCase().includes(lowerQuery) ||
+       template.objective.toLowerCase().includes(lowerQuery))
     );
 
     matchingTemplates.forEach(template => {
       this.searchResults.push({
         type: 'template',
-        id: template.id || '',
+        id: String(template.id), // Ensure ID is a string
         name: template.name,
         objective: template.objective,
         status: template.status,
@@ -209,15 +210,44 @@ export class HeaderComponent implements OnInit, OnDestroy {
     this.isSearching = false;
   }
 
-  selectSearchResult(result: SearchResult) {
-    console.log('Selected search result:', result);
-    this.showSearchResults = false;
-    this.searchQuery = '';
+  selectSearchResult(result: SearchResult, event?: Event) {
+    // Prevent event bubbling
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
+
+    console.log('Search result clicked:', result);
+    console.log('Result type:', result.type);
+    console.log('Result ID:', result.id);
 
     if (result.type === 'template') {
-      // Navigate to test-runner page for templates
-      console.log('Navigating to test-runner with id:', result.id);
-      this.router.navigate(['/test-runner', result.id]);
+      // Validate ID before navigating
+      if (!result.id || result.id.trim() === '') {
+        console.error('Invalid template ID:', result.id);
+        this.notificationService.showError('Error: Invalid template ID');
+        return;
+      }
+
+      // Close search dropdown and clear query
+      this.showSearchResults = false;
+      this.searchQuery = '';
+
+      // Small delay to ensure dropdown closes before navigation
+      setTimeout(() => {
+        console.log('Attempting navigation to /test-runner/' + result.id);
+        this.router.navigate(['/test-runner', result.id])
+          .then(success => {
+            console.log('Navigation success:', success);
+            if (!success) {
+              this.notificationService.showError('Navigation failed. Please try again.');
+            }
+          })
+          .catch(error => {
+            console.error('Navigation error:', error);
+            this.notificationService.showError('Error navigating to template: ' + error.message);
+          });
+      }, 100);
     }
   }
 

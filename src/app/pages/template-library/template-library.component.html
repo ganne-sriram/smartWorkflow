@@ -13,14 +13,27 @@
 
   <div class="templates-grid" *ngIf="templates.length > 0">
     <div class="template-card" *ngFor="let template of templates" (click)="selectTemplate(template)">
-      <button class="delete-button" (click)="deleteTemplate($event, template)" title="Delete template">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
       <div class="template-header">
         <h3>{{ template.name }}</h3>
-        <span class="template-badge">{{ template.status }}</span>
+        <div class="header-right">
+          <button class="menu-button"
+                  (click)="toggleMenu($event, template)"
+                  title="Options">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="5" r="2" fill="currentColor"/>
+              <circle cx="12" cy="12" r="2" fill="currentColor"/>
+              <circle cx="12" cy="19" r="2" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="menu-dropdown" *ngIf="template.id === activeMenuId" (click)="$event.stopPropagation()">
+            <button class="menu-item delete-item" (click)="deleteTemplate($event, template)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
       </div>
       
       <div class="template-info">

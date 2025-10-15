@@ -19,16 +19,32 @@ public class TestRunService {
     private TestRunRepository testRunRepository;
     
     public TestRun createTestRun(TestRun testRun, Long userId) {
+        // Store the stages temporarily and clear them from the testRun
+        List<TestRunStage> stagesToAdd = new java.util.ArrayList<>();
+        if (testRun.getStages() != null && !testRun.getStages().isEmpty()) {
+            stagesToAdd.addAll(testRun.getStages());
+            testRun.getStages().clear();
+        }
+
+        // Clear the TestRun ID and set properties
+        testRun.setId(null);
         testRun.setUserId(userId);
         testRun.setStartedAt(Instant.now());
         testRun.setStatus("RUNNING");
 
-        // Set bidirectional relationship for stages
-        if (testRun.getStages() != null) {
-            testRun.getStages().forEach(stage -> stage.setTestRun(testRun));
+        // Save the TestRun first without stages to get the ID
+        TestRun savedTestRun = testRunRepository.save(testRun);
+        testRunRepository.flush(); // Force the ID to be generated
+
+        // Now add the stages with the proper relationship
+        for (TestRunStage stage : stagesToAdd) {
+            stage.setId(null);  // Clear any existing ID
+            stage.setTestRun(savedTestRun);  // Set the parent reference with the saved entity
+            savedTestRun.getStages().add(stage);
         }
 
-        return testRunRepository.save(testRun);
+        // Save again with the stages
+        return testRunRepository.save(savedTestRun);
     }
     
     public Optional<TestRun> getTestRunById(Long id) {

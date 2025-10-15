@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Read(//c/Users/srira/Desktop/**)",
+      "Bash(mvn clean install:*)"
     ],
     "deny": [],
     "ask": []
