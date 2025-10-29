@@ -1,10 +1,21 @@
 import { DraftWorkflow } from './draft-workflow.model';
 
+export interface TemplateField {
+  id: string;
+  type: 'text' | 'date' | 'number';
+  name: string;
+  value: string;
+  stageName: string;
+  sourceType: 'option' | 'checklist';
+  sourceName: string;
+}
+
 export interface Template {
   id?: string | null;
   name: string;
   objective: string;
   stages: TemplateStage[];
+  templateFields?: TemplateField[];
   status: 'ACTIVE' | 'DRAFT' | 'ARCHIVED';
   version: number;
   createdBy?: string;

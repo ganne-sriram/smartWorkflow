@@ -163,8 +163,8 @@ export class WorkspaceWizardComponent implements OnInit {
         return;
       }
 
-      // All stages are valid, proceed to completion
-      this.router.navigate(['/workflow-completion']);
+      // All stages are valid, proceed to template builder
+      this.router.navigate(['/template-builder']);
       return;
     }
 

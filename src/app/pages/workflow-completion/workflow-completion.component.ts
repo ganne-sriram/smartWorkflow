@@ -5,7 +5,7 @@ import { DraftWorkflowService } from '../../services/draft-workflow.service';
 import { TemplateService } from '../../services/template.service';
 import { NotificationService } from '../../services/notification.service';
 import { DraftWorkflow } from '../../models/draft-workflow.model';
-import { convertDraftToTemplate } from '../../models/template.model';
+import { convertDraftToTemplate, TemplateField } from '../../models/template.model';
 
 @Component({
   selector: 'app-workflow-completion',
@@ -33,10 +33,21 @@ export class WorkflowCompletionComponent implements OnInit {
   saveAsTemplate() {
     if (!this.workflow) return;
     const template = convertDraftToTemplate(this.workflow);
+    
+    const templateFieldsJson = localStorage.getItem('template_fields');
+    if (templateFieldsJson) {
+      try {
+        template.templateFields = JSON.parse(templateFieldsJson) as TemplateField[];
+      } catch (e) {
+        console.error('Error parsing template fields:', e);
+      }
+    }
+    
     this.templateService.saveTemplate(template).subscribe({
       next: (savedTemplate) => {
         this.notificationService.showSuccess(`Template "${savedTemplate.name}" created successfully!`);
         this.draftService.clearDraft();
+        localStorage.removeItem('template_fields');
         this.router.navigate(['/available-workflows']);
       },
       error: (error) => {
@@ -49,6 +60,16 @@ export class WorkflowCompletionComponent implements OnInit {
   exploreWorkflow() {
     if (!this.workflow) return;
     const template = convertDraftToTemplate(this.workflow);
+    
+    const templateFieldsJson = localStorage.getItem('template_fields');
+    if (templateFieldsJson) {
+      try {
+        template.templateFields = JSON.parse(templateFieldsJson) as TemplateField[];
+      } catch (e) {
+        console.error('Error parsing template fields:', e);
+      }
+    }
+    
     this.templateService.saveTemplate(template).subscribe({
       next: (savedTemplate) => {
         if (!savedTemplate.id) {
@@ -60,6 +81,7 @@ export class WorkflowCompletionComponent implements OnInit {
         this.templateService.publishTemplate(savedTemplate.id).subscribe({
           next: (publishedTemplate) => {
             this.draftService.clearDraft();
+            localStorage.removeItem('template_fields');
             this.router.navigate(['/test-runner', publishedTemplate.id]);
           },
           error: (error) => {

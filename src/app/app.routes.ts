@@ -3,6 +3,7 @@ import { DesignProcessFlowComponent } from './pages/design-process-flow/design-p
 import { AvailableWorkflowsComponent } from './pages/available-workflows/available-workflows.component';
 import { ProcessFlowInfoComponent } from './pages/process-flow-info/process-flow-info.component';
 import { WorkspaceWizardComponent } from './pages/workspace-wizard/workspace-wizard.component';
+import { TemplateBuilderComponent } from './pages/template-builder/template-builder.component';
 import { WorkflowCompletionComponent } from './pages/workflow-completion/workflow-completion.component';
 import { TestRunnerComponent } from './pages/test-runner/test-runner.component';
 import { TestSummaryComponent } from './pages/test-summary/test-summary.component';
@@ -18,6 +19,7 @@ export const routes: Routes = [
   { path: 'available-workflows', component: AvailableWorkflowsComponent, canActivate: [authGuard] },
   { path: 'process-flow-info', component: ProcessFlowInfoComponent, canActivate: [authGuard] },
   { path: 'workspace-wizard', component: WorkspaceWizardComponent, canActivate: [authGuard] },
+  { path: 'template-builder', component: TemplateBuilderComponent, canActivate: [authGuard] },
   { path: 'workflow-completion', component: WorkflowCompletionComponent, canActivate: [authGuard] },
   { path: 'test-runner/:templateId', component: TestRunnerComponent, canActivate: [authGuard] },
   { path: 'test-summary/:testRunId', component: TestSummaryComponent, canActivate: [authGuard] },
