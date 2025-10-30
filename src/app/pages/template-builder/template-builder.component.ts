@@ -218,7 +218,7 @@ export class TemplateBuilderComponent implements OnInit {
 
   saveDraft() {
     localStorage.setItem('template_fields', JSON.stringify(this.templateFields));
-    alert('Draft saved successfully!');
+    this.router.navigate(['/workflow-completion']);
   }
 
   proceedToCompletion() {
@@ -227,7 +227,7 @@ export class TemplateBuilderComponent implements OnInit {
   }
 
   canSave(): boolean {
-    return this.templateFields.some(field => field.value && field.value.trim() !== '');
+    return true;
   }
 
   goBack() {
