@@ -9,6 +9,7 @@ import { TestRunnerComponent } from './pages/test-runner/test-runner.component';
 import { TestSummaryComponent } from './pages/test-summary/test-summary.component';
 import { TemplateLibraryComponent } from './pages/template-library/template-library.component';
 import { ImportWorkflowComponent } from './pages/import-workflow/import-workflow.component';
+import { RequestInitiationComponent } from './pages/request-initiation/request-initiation.component';
 import { LoginComponent } from './pages/login/login.component';
 import { authGuard } from './guards/auth.guard';
 
@@ -24,5 +25,6 @@ export const routes: Routes = [
   { path: 'test-runner/:templateId', component: TestRunnerComponent, canActivate: [authGuard] },
   { path: 'test-summary/:testRunId', component: TestSummaryComponent, canActivate: [authGuard] },
   { path: 'template-library', component: TemplateLibraryComponent, canActivate: [authGuard] },
-  { path: 'import-workflow', component: ImportWorkflowComponent, canActivate: [authGuard] }
+  { path: 'import-workflow', component: ImportWorkflowComponent, canActivate: [authGuard] },
+  { path: 'request-initiation', component: RequestInitiationComponent, canActivate: [authGuard] }
 ];
