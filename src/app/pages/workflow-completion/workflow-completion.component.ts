@@ -48,7 +48,7 @@ export class WorkflowCompletionComponent implements OnInit {
         this.notificationService.showSuccess(`Template "${savedTemplate.name}" created successfully!`);
         this.draftService.clearDraft();
         localStorage.removeItem('template_fields');
-        this.router.navigate(['/available-workflows']);
+        this.router.navigate(['/template-library']);
       },
       error: (error) => {
         console.error('Error saving template:', error);
