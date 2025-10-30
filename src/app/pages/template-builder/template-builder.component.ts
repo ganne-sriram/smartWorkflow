@@ -7,7 +7,7 @@ import { DraftWorkflow } from '../../models/draft-workflow.model';
 
 export interface TemplateField {
   id: string;
-  type: 'text' | 'date' | 'number';
+  type: 'text' | 'date' | 'number' | 'address';
   name: string;
   value: string;
   stageName: string;
@@ -28,8 +28,10 @@ export class TemplateBuilderComponent implements OnInit {
   selectedSourceType: 'option' | 'checklist' = 'option';
   selectedSourceName: string = '';
   showFieldNamePrompt: boolean = false;
-  pendingFieldType: 'text' | 'date' | 'number' | null = null;
+  pendingFieldType: 'text' | 'date' | 'number' | 'address' | null = null;
   newFieldName: string = '';
+  
+  currentStage: any = null;
 
   constructor(
     private draftService: DraftWorkflowService,
@@ -43,9 +45,49 @@ export class TemplateBuilderComponent implements OnInit {
       return;
     }
 
-    if (this.workflow.stages.length > 0 && this.workflow.stages[0].selectedOptions.length > 0) {
-      this.selectedSourceName = this.workflow.stages[0].selectedOptions[0];
+    this.loadCurrentStage();
+    this.loadTemplateFields();
+  }
+
+  loadCurrentStage() {
+    if (this.workflow && this.workflow.stages.length > 0) {
+      this.currentStage = this.workflow.stages[this.selectedStageIndex];
+      const allSources = [...this.currentStage.selectedOptions, ...this.currentStage.selectedChecklists];
+      if (allSources.length > 0) {
+        if (this.currentStage.selectedOptions.length > 0) {
+          this.selectedSourceType = 'option';
+          this.selectedSourceName = this.currentStage.selectedOptions[0];
+        } else {
+          this.selectedSourceType = 'checklist';
+          this.selectedSourceName = this.currentStage.selectedChecklists[0];
+        }
+      }
     }
+  }
+
+  loadTemplateFields() {
+    const savedFields = localStorage.getItem('template_fields');
+    if (savedFields) {
+      try {
+        this.templateFields = JSON.parse(savedFields);
+      } catch (e) {
+        console.error('Error loading template fields:', e);
+      }
+    }
+  }
+
+  goToStage(index: number) {
+    this.selectedStageIndex = index;
+    this.loadCurrentStage();
+  }
+
+  getStages(): any[] {
+    return this.workflow?.stages || [];
+  }
+
+  selectSource(sourceType: 'option' | 'checklist', sourceName: string) {
+    this.selectedSourceType = sourceType;
+    this.selectedSourceName = sourceName;
   }
 
   getStageOptions(stageIndex: number): string[] {
@@ -132,7 +174,7 @@ export class TemplateBuilderComponent implements OnInit {
     }
   }
 
-  promptForFieldName(fieldType: 'text' | 'date' | 'number') {
+  promptForFieldName(fieldType: 'text' | 'date' | 'number' | 'address') {
     if (!this.selectedSourceName) {
       alert('Please select a stage and source (option or checklist) first.');
       return;
@@ -174,9 +216,18 @@ export class TemplateBuilderComponent implements OnInit {
     }
   }
 
+  saveDraft() {
+    localStorage.setItem('template_fields', JSON.stringify(this.templateFields));
+    alert('Draft saved successfully!');
+  }
+
   proceedToCompletion() {
     localStorage.setItem('template_fields', JSON.stringify(this.templateFields));
     this.router.navigate(['/workflow-completion']);
+  }
+
+  canSave(): boolean {
+    return this.templateFields.some(field => field.value && field.value.trim() !== '');
   }
 
   goBack() {

@@ -1,229 +1,124 @@
-<div class="template-builder-container" *ngIf="workflow">
-  <div class="header">
-    <h1>Template Field Builder</h1>
-    <p>Create dynamic input fields for your workflow template: {{ workflow.name }}</p>
+<div class="builder-container" *ngIf="workflow">
+  <div class="stepper">
+    <div *ngFor="let stage of getStages(); let i = index" class="step" 
+         [class.active]="i === selectedStageIndex"
+         [class.completed]="i < selectedStageIndex"
+         (click)="goToStage(i)">
+      <div class="step-number">{{ i + 1 }}</div>
+      <div class="step-label">{{ stage.name }}</div>
+    </div>
   </div>
 
-  <div class="builder-content">
-    <div class="selection-panel">
-      <h2>Select Context</h2>
+  <div class="content-wrapper">
+    <div class="left-sidebar">
+      <button class="initiation-btn" (click)="goBack()">Request Initiation</button>
       
-      <div class="form-group">
-        <label for="stage-select">Stage:</label>
-        <select 
-          id="stage-select" 
-          [(ngModel)]="selectedStageIndex" 
-          (change)="onStageChange()"
-          class="form-control">
-          <option *ngFor="let stage of workflow.stages; let i = index" [value]="i">
-            {{ stage.name }}
-          </option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="source-type-select">Source Type:</label>
-        <select 
-          id="source-type-select" 
-          [(ngModel)]="selectedSourceType" 
-          (change)="onSourceTypeChange()"
-          class="form-control">
-          <option value="option">Option</option>
-          <option value="checklist">Checklist</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label for="source-select">
-          {{ selectedSourceType === 'option' ? 'Option' : 'Checklist' }}:
-        </label>
-        <select 
-          id="source-select" 
-          [(ngModel)]="selectedSourceName"
-          class="form-control"
-          [disabled]="getCurrentSources().length === 0">
-          <option *ngFor="let source of getCurrentSources()" [value]="source">
-            {{ source }}
-          </option>
-        </select>
-        <p class="helper-text" *ngIf="getCurrentSources().length === 0">
-          No {{ selectedSourceType === 'option' ? 'options' : 'checklists' }} selected for this stage
-        </p>
-      </div>
-
-      <div class="button-group">
-        <button 
-          class="btn btn-text" 
-          (click)="promptForFieldName('text')"
-          [disabled]="!selectedSourceName">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 7h16M4 12h10M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          Add Text Field
-        </button>
-        
-        <button 
-          class="btn btn-date" 
-          (click)="promptForFieldName('date')"
-          [disabled]="!selectedSourceName">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2"/>
-            <path d="M3 10h18M8 2v4M16 2v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          Add Date Field
-        </button>
-        
-        <button 
-          class="btn btn-number" 
-          (click)="promptForFieldName('number')"
-          [disabled]="!selectedSourceName">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M9 7h6M9 12h6M9 17h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <rect x="6" y="4" width="12" height="16" rx="1" stroke="currentColor" stroke-width="2"/>
-          </svg>
-          Add Number Field
-        </button>
-      </div>
-
-      <div class="current-selection-fields" *ngIf="selectedSourceName">
-        <h3>Fields for: {{ selectedSourceName }}</h3>
-        <div class="fields-table" *ngIf="getFieldsForCurrentSelection().length > 0">
-          <table>
-            <thead>
-              <tr>
-                <th>Field Name</th>
-                <th>Type</th>
-                <th>Value</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let field of getFieldsForCurrentSelection()">
-                <td>{{ field.name }}</td>
-                <td>
-                  <span class="field-type-badge" [class.type-text]="field.type === 'text'" 
-                        [class.type-date]="field.type === 'date'" 
-                        [class.type-number]="field.type === 'number'">
-                    {{ field.type }}
-                  </span>
-                </td>
-                <td>
-                  <input 
-                    *ngIf="field.type === 'text'" 
-                    type="text" 
-                    [(ngModel)]="field.value"
-                    class="field-input"
-                    placeholder="Enter value">
-                  <input 
-                    *ngIf="field.type === 'date'" 
-                    type="date" 
-                    [(ngModel)]="field.value"
-                    class="field-input">
-                  <input 
-                    *ngIf="field.type === 'number'" 
-                    type="number" 
-                    [(ngModel)]="field.value"
-                    class="field-input"
-                    placeholder="Enter number">
-                </td>
-                <td>
-                  <button class="btn-delete" (click)="deleteField(field.id)" title="Delete field">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="sidebar-group" *ngIf="currentStage && currentStage.selectedOptions.length > 0">
+        <div class="group-label">Options</div>
+        <div *ngFor="let option of currentStage.selectedOptions" 
+             class="sidebar-item"
+             [class.active]="selectedSourceType === 'option' && selectedSourceName === option"
+             (click)="selectSource('option', option)">
+          <span>{{ option }}</span>
+          <span class="arrow">›</span>
         </div>
-        <p class="no-fields" *ngIf="getFieldsForCurrentSelection().length === 0">
-          No fields created yet. Click a button above to add fields.
-        </p>
+      </div>
+
+      <div class="sidebar-group" *ngIf="currentStage && currentStage.selectedChecklists.length > 0">
+        <div class="group-label">Checklists</div>
+        <div *ngFor="let checklist of currentStage.selectedChecklists" 
+             class="sidebar-item"
+             [class.active]="selectedSourceType === 'checklist' && selectedSourceName === checklist"
+             (click)="selectSource('checklist', checklist)">
+          <span>{{ checklist }}</span>
+        </div>
       </div>
     </div>
 
-    <div class="summary-panel">
-      <h2>All Template Fields</h2>
-      <div class="summary-content" *ngIf="templateFields.length > 0">
-        <div class="summary-group" *ngFor="let group of getAllFieldsByStageAndSource()">
-          <h3>{{ group.stageName }} - {{ group.sourceType }}: {{ group.sourceName }}</h3>
-          <table class="summary-table">
-            <thead>
-              <tr>
-                <th>Field Name</th>
-                <th>Type</th>
-                <th>Value</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let field of group.fields">
-                <td>{{ field.name }}</td>
-                <td>
-                  <span class="field-type-badge" [class.type-text]="field.type === 'text'" 
-                        [class.type-date]="field.type === 'date'" 
-                        [class.type-number]="field.type === 'number'">
-                    {{ field.type }}
-                  </span>
-                </td>
-                <td>{{ field.value || '-' }}</td>
-              </tr>
-            </tbody>
-          </table>
+    <div class="main-content">
+      <div class="content-header">
+        <h3 *ngIf="selectedSourceName">{{ selectedSourceName }}</h3>
+        <h3 *ngIf="!selectedSourceName">Select an option or checklist</h3>
+      </div>
+
+      <div class="fields-container" *ngIf="selectedSourceName">
+        <div *ngFor="let field of getFieldsForCurrentSelection()" class="field-row">
+          <label>{{ field.name }}</label>
+          <textarea *ngIf="field.type === 'address'" 
+                    [(ngModel)]="field.value" 
+                    class="field-input field-textarea"
+                    rows="4"
+                    placeholder="Enter address"></textarea>
+          <input *ngIf="field.type === 'text'" 
+                 type="text" 
+                 [(ngModel)]="field.value" 
+                 class="field-input"
+                 placeholder="Enter text">
+          <input *ngIf="field.type === 'number'" 
+                 type="number" 
+                 [(ngModel)]="field.value" 
+                 class="field-input"
+                 placeholder="Enter number">
+          <input *ngIf="field.type === 'date'" 
+                 type="date" 
+                 [(ngModel)]="field.value" 
+                 class="field-input">
+          <button class="delete-field-btn" (click)="deleteField(field.id)" title="Delete field">×</button>
+        </div>
+
+        <div *ngIf="getFieldsForCurrentSelection().length === 0" class="empty-message">
+          No fields added yet. Click a button on the right to add fields.
         </div>
       </div>
-      <p class="no-fields" *ngIf="templateFields.length === 0">
-        No fields created yet. Use the panel on the left to create template fields.
-      </p>
-    </div>
-  </div>
 
-  <div class="actions">
-    <button class="btn btn-back" (click)="goBack()">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Go Back
-    </button>
-    <button class="btn btn-primary" (click)="proceedToCompletion()">
-      Save Template
-    </button>
+      <div class="actions">
+        <button class="cancel-btn" (click)="goBack()">Cancel Request</button>
+        <button class="save-btn" (click)="saveDraft()" [disabled]="!canSave()">Save Draft</button>
+      </div>
+    </div>
+
+    <div class="right-sidebar">
+      <button class="field-type-btn text-btn" (click)="promptForFieldName('text')">
+        <span class="btn-label">TEXT BUTTON</span>
+      </button>
+      <button class="field-type-btn address-btn" (click)="promptForFieldName('address')">
+        <span class="btn-label">ADDRESS BUTTON</span>
+      </button>
+      <button class="field-type-btn number-btn" (click)="promptForFieldName('number')">
+        <span class="btn-label">nUMBER BUTTON</span>
+      </button>
+    </div>
   </div>
 </div>
 
 <div class="modal-overlay" *ngIf="showFieldNamePrompt" (click)="cancelFieldCreation()">
-  <div class="modal" (click)="$event.stopPropagation()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
     <div class="modal-header">
-      <h2>Enter Field Name</h2>
-      <button class="modal-close" (click)="cancelFieldCreation()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </button>
+      <h3>Add New Field</h3>
+      <button class="close-btn" (click)="cancelFieldCreation()">×</button>
     </div>
     <div class="modal-body">
-      <p>Creating a <strong>{{ pendingFieldType }}</strong> field for:</p>
-      <p class="context-info" *ngIf="workflow && workflow.stages[selectedStageIndex]">
-        <strong>Stage:</strong> {{ workflow.stages[selectedStageIndex].name }}<br>
-        <strong>{{ selectedSourceType === 'option' ? 'Option' : 'Checklist' }}:</strong> {{ selectedSourceName }}
-      </p>
       <div class="form-group">
-        <label for="field-name-input">Field Name:</label>
-        <input 
-          id="field-name-input"
-          type="text" 
-          [(ngModel)]="newFieldName"
-          (keyup.enter)="createField()"
-          class="form-control"
-          placeholder="Enter field name"
-          autofocus>
+        <label>Field Label:</label>
+        <input type="text" 
+               [(ngModel)]="newFieldName" 
+               class="modal-input"
+               placeholder="Enter field label"
+               (keyup.enter)="createField()">
+      </div>
+      <div class="form-group">
+        <label>Field Type:</label>
+        <select [(ngModel)]="pendingFieldType" class="modal-select">
+          <option value="text">Text</option>
+          <option value="address">Address</option>
+          <option value="number">Number</option>
+          <option value="date">Date</option>
+        </select>
       </div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" (click)="cancelFieldCreation()">Cancel</button>
-      <button class="btn btn-primary" (click)="createField()" [disabled]="!newFieldName.trim()">
-        Create Field
-      </button>
+      <button class="modal-cancel-btn" (click)="cancelFieldCreation()">Cancel</button>
+      <button class="modal-add-btn" (click)="createField()" [disabled]="!newFieldName.trim()">Add Field</button>
     </div>
   </div>
 </div>
