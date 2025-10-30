@@ -34,8 +34,12 @@
                       [(ngModel)]="field.value" 
                       class="field-input field-textarea"
                       rows="4"></textarea>
-            <input *ngIf="field.type !== 'address'" 
+            <input *ngIf="field.type === 'text'" 
                    type="text" 
+                   [(ngModel)]="field.value" 
+                   class="field-input">
+            <input *ngIf="field.type === 'number'" 
+                   type="number" 
                    [(ngModel)]="field.value" 
                    class="field-input">
             <button class="delete-field-btn" (click)="deleteField('case', field.id)" title="Delete field">×</button>
@@ -49,8 +53,12 @@
                       [(ngModel)]="field.value" 
                       class="field-input field-textarea"
                       rows="4"></textarea>
-            <input *ngIf="field.type !== 'address'" 
+            <input *ngIf="field.type === 'text'" 
                    type="text" 
+                   [(ngModel)]="field.value" 
+                   class="field-input">
+            <input *ngIf="field.type === 'number'" 
+                   type="number" 
                    [(ngModel)]="field.value" 
                    class="field-input">
             <button class="delete-field-btn" (click)="deleteField('transaction', field.id)" title="Delete field">×</button>

@@ -33,7 +33,12 @@ export class RequestInitiationComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
-    this.initializeDefaultFields();
+    const savedDraft = localStorage.getItem('request_initiation_draft');
+    if (savedDraft) {
+      this.loadDraft();
+    } else {
+      this.initializeDefaultFields();
+    }
   }
 
   initializeDefaultFields() {
