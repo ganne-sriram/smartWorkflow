@@ -74,14 +74,11 @@
         <div *ngIf="getFieldsForCurrentSelection().length === 0" class="empty-message">
           No fields added yet. Click a button on the right to add fields.
         </div>
-
-        <div *ngIf="canShowNextButton()" class="next-button-container">
-          <button class="next-source-btn" (click)="goToNextSource()">Next</button>
-        </div>
       </div>
 
       <div class="actions">
         <button class="cancel-btn" (click)="goBack()">Cancel Request</button>
+        <button class="next-source-btn" *ngIf="canShowNextButton()" (click)="goToNextSource()">Next</button>
         <button class="save-btn" *ngIf="canSave()" (click)="saveDraft()">Save Draft</button>
       </div>
     </div>

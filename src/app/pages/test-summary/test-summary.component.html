@@ -22,6 +22,19 @@
       <p>{{ summaryText }}</p>
     </div>
 
+    <div class="fields-section" *ngIf="displayedFields.length > 0">
+      <h2>Template Fields</h2>
+      <div *ngFor="let group of displayedFields" class="field-group">
+        <h3>{{ group.stageName }} - {{ group.sourceType }}: {{ group.sourceName }}</h3>
+        <div class="field-list">
+          <div *ngFor="let field of group.fields" class="field-item">
+            <label>{{ field.name }}:</label>
+            <span class="field-value">{{ field.value || '(not filled)' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="payload-section">
       <h2>Result Payload</h2>
       <pre class="payload-content">{{ resultPayload }}</pre>

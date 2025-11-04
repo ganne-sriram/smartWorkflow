@@ -78,11 +78,13 @@
 }
 
 .summary-section,
+.fields-section,
 .payload-section {
   margin-bottom: 2.5rem;
 }
 
 .summary-section h2,
+.fields-section h2,
 .payload-section h2 {
   font-size: 1.25rem;
   font-weight: 600;
@@ -94,6 +96,52 @@
   font-size: 1rem;
   color: #4b5563;
   line-height: 1.6;
+}
+
+.field-group {
+  margin-bottom: 1.5rem;
+  padding: 1.5rem;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+}
+
+.field-group h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.field-item {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 1rem;
+  align-items: start;
+}
+
+.field-item label {
+  font-weight: 500;
+  color: #374151;
+}
+
+.field-value {
+  color: #1f2937;
+  padding: 0.5rem 0.75rem;
+  background: white;
+  border: 1px solid #d1d5db;
+  border-radius: 0.375rem;
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
 }
 
 .payload-content {
