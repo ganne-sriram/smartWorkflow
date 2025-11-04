@@ -1,0 +1,39 @@
+<div class="summary-container" *ngIf="testRun">
+  <div class="stepper">
+    <div *ngFor="let stage of testRun.stages; let i = index" class="step completed">
+      <div class="step-number">{{ i + 1 }}</div>
+      <div class="step-label">{{ stage.name }}</div>
+    </div>
+  </div>
+
+  <div class="summary-content">
+    <div class="success-icon">
+      <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="10" stroke="#10b981" stroke-width="2"/>
+        <path d="M8 12L11 15L16 9" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    
+    <h1>Workflow Completed Successfully!</h1>
+    <p class="workflow-name">{{ testRun.templateName }}</p>
+
+    <div class="summary-section">
+      <h2>Summary</h2>
+      <p>{{ summaryText }}</p>
+    </div>
+
+    <div class="payload-section">
+      <h2>Result Payload</h2>
+      <pre class="payload-content">{{ resultPayload }}</pre>
+    </div>
+
+    <div class="actions">
+      <button class="action-btn primary" (click)="runAnotherTest()">
+        Run Another Test
+      </button>
+      <button class="action-btn secondary" (click)="goToDashboard()">
+        Go to Dashboard
+      </button>
+    </div>
+  </div>
+</div>

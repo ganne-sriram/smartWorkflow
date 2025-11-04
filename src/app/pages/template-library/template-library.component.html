@@ -1,0 +1,74 @@
+<div class="library-container">
+  <div class="library-header">
+    <button class="back-button" (click)="goBack()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back
+    </button>
+
+    <h1>Template Library</h1>
+    <p class="subtitle">Select a template to start editing or testing</p>
+  </div>
+
+  <div class="templates-grid" *ngIf="templates.length > 0">
+    <div class="template-card" *ngFor="let template of templates" (click)="selectTemplate(template)">
+      <div class="template-header">
+        <h3>{{ template.name }}</h3>
+        <div class="header-right">
+          <button class="menu-button"
+                  (click)="toggleMenu($event, template)"
+                  title="Options">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="5" r="2" fill="currentColor"/>
+              <circle cx="12" cy="12" r="2" fill="currentColor"/>
+              <circle cx="12" cy="19" r="2" fill="currentColor"/>
+            </svg>
+          </button>
+          <div class="menu-dropdown" *ngIf="template.id === activeMenuId" (click)="$event.stopPropagation()">
+            <button class="menu-item delete-item" (click)="deleteTemplate($event, template)">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 7L18.1327 19.1425C18.0579 20.1891 17.187 21 16.1378 21H7.86224C6.81296 21 5.94208 20.1891 5.86732 19.1425L5 7M10 11V17M14 11V17M15 7V4C15 3.44772 14.5523 3 14 3H10C9.44772 3 9 3.44772 9 4V7M4 7H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Delete
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="template-info">
+        <p class="template-objective">{{ template.objective }}</p>
+        
+        <div class="template-stats">
+          <div class="stat-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M9 5H7C5.89543 5 5 5.89543 5 7V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V7C19 5.89543 18.1046 5 17 5H15M9 5C9 6.10457 9.89543 7 11 7H13C14.1046 7 15 6.10457 15 5M9 5C9 3.89543 9.89543 3 11 3H13C14.1046 3 15 3.89543 15 5" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>{{ template.stages.length }} Stages</span>
+          </div>
+          
+          <div class="stat-item">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            <span>{{ template.updatedAt | date:'MMM d, yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="empty-state" *ngIf="templates.length === 0">
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M19 3H5C3.89543 3 3 3.89543 3 5V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V5C21 3.89543 20.1046 3 19 3Z" stroke="#9ca3af" stroke-width="2"/>
+      <path d="M3 9H21" stroke="#9ca3af" stroke-width="2"/>
+      <path d="M9 21V9" stroke="#9ca3af" stroke-width="2"/>
+    </svg>
+    <h2>No Templates Available</h2>
+    <p>Create a workflow and save it as a template to see it here.</p>
+    <button class="create-button" (click)="goBack()">
+      Create Workflow
+    </button>
+  </div>
+</div>

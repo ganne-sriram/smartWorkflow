@@ -1,0 +1,133 @@
+<div class="builder-container" *ngIf="workflow">
+  <div class="stepper">
+    <div *ngFor="let stage of getStages(); let i = index" class="step" 
+         [class.active]="i === selectedStageIndex"
+         [class.completed]="i < selectedStageIndex"
+         [class.disabled]="i > selectedStageIndex && !isStageComplete(selectedStageIndex)"
+         (click)="goToStage(i)">
+      <div class="step-number">{{ i + 1 }}</div>
+      <div class="step-label">{{ stage.name }}</div>
+    </div>
+  </div>
+
+  <div class="error-message" *ngIf="stageNavigationError">
+    {{ stageNavigationError }}
+  </div>
+
+  <div class="content-wrapper">
+    <div class="left-sidebar">
+      <button class="initiation-btn" (click)="goBack()">Request Initiation</button>
+      
+      <div class="sidebar-group" *ngIf="currentStage && currentStage.selectedOptions.length > 0">
+        <div class="group-label">Options</div>
+        <div *ngFor="let option of currentStage.selectedOptions" 
+             class="sidebar-item"
+             [class.active]="selectedSourceType === 'option' && selectedSourceName === option"
+             (click)="selectSource('option', option)">
+          <span>{{ option }}</span>
+          <span class="arrow">›</span>
+        </div>
+      </div>
+
+      <div class="sidebar-group" *ngIf="currentStage && currentStage.selectedChecklists.length > 0">
+        <div class="group-label">Checklists</div>
+        <div *ngFor="let checklist of currentStage.selectedChecklists" 
+             class="sidebar-item"
+             [class.active]="selectedSourceType === 'checklist' && selectedSourceName === checklist"
+             (click)="selectSource('checklist', checklist)">
+          <span>{{ checklist }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="content-header">
+        <h3 *ngIf="selectedSourceName">{{ selectedSourceName }}</h3>
+        <h3 *ngIf="!selectedSourceName">Select an option or checklist</h3>
+      </div>
+
+      <div class="fields-container" *ngIf="selectedSourceName">
+        <div *ngFor="let field of getFieldsForCurrentSelection()" class="field-row">
+          <label>{{ field.name }}</label>
+          <textarea *ngIf="field.type === 'address'" 
+                    [(ngModel)]="field.value" 
+                    class="field-input field-textarea"
+                    rows="4"
+                    placeholder="Enter address"></textarea>
+          <input *ngIf="field.type === 'text'" 
+                 type="text" 
+                 [(ngModel)]="field.value" 
+                 class="field-input"
+                 placeholder="Enter text">
+          <input *ngIf="field.type === 'number'" 
+                 type="number" 
+                 [(ngModel)]="field.value" 
+                 class="field-input"
+                 placeholder="Enter number">
+          <input *ngIf="field.type === 'date'" 
+                 type="date" 
+                 [(ngModel)]="field.value" 
+                 class="field-input">
+          <button class="delete-field-btn" (click)="deleteField(field.id)" title="Delete field">×</button>
+        </div>
+
+        <div *ngIf="getFieldsForCurrentSelection().length === 0" class="empty-message">
+          No fields added yet. Click a button on the right to add fields.
+        </div>
+
+        <div *ngIf="canShowNextButton()" class="next-button-container">
+          <button class="next-source-btn" (click)="goToNextSource()">Next</button>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="cancel-btn" (click)="goBack()">Cancel Request</button>
+        <button class="save-btn" *ngIf="canSave()" (click)="saveDraft()">Save Draft</button>
+      </div>
+    </div>
+
+    <div class="right-sidebar">
+      <button class="field-type-btn text-btn" (click)="promptForFieldName('text')">
+        <span class="btn-label">TEXT BUTTON</span>
+      </button>
+      <button class="field-type-btn address-btn" (click)="promptForFieldName('address')">
+        <span class="btn-label">ADDRESS BUTTON</span>
+      </button>
+      <button class="field-type-btn number-btn" (click)="promptForFieldName('number')">
+        <span class="btn-label">nUMBER BUTTON</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" *ngIf="showFieldNamePrompt" (click)="cancelFieldCreation()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Add New Field</h3>
+      <button class="close-btn" (click)="cancelFieldCreation()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Field Label:</label>
+        <input type="text" 
+               [(ngModel)]="newFieldName" 
+               class="modal-input"
+               placeholder="Enter field label"
+               (keyup.enter)="createField()">
+      </div>
+      <div class="form-group">
+        <label>Field Type:</label>
+        <select [(ngModel)]="pendingFieldType" class="modal-select">
+          <option value="text">Text</option>
+          <option value="address">Address</option>
+          <option value="number">Number</option>
+          <option value="date">Date</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="modal-cancel-btn" (click)="cancelFieldCreation()">Cancel</button>
+      <button class="modal-add-btn" (click)="createField()" [disabled]="!newFieldName.trim()">Add Field</button>
+    </div>
+  </div>
+</div>
