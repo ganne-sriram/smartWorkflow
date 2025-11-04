@@ -2,7 +2,7 @@ import { DraftWorkflow } from './draft-workflow.model';
 
 export interface TemplateField {
   id: string;
-  type: 'text' | 'date' | 'number';
+  type: 'text' | 'date' | 'number' | 'address';
   name: string;
   value: string;
   stageName: string;

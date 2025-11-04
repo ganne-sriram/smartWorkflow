@@ -4,8 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TemplateService } from '../../services/template.service';
 import { TestRunService } from '../../services/test-run.service';
-import { Template, TestRun, TestRunStage, createTestRunFromTemplate } from '../../models/template.model';
+import { Template, TestRun, TestRunStage, TemplateField, createTestRunFromTemplate } from '../../models/template.model';
 import { CaseQualityScoreComponent } from '../../components/case-quality-score/case-quality-score.component';
+
+interface FieldGroup {
+  sourceType: 'option' | 'checklist';
+  sourceName: string;
+  fields: TemplateField[];
+}
 
 @Component({
   selector: 'app-test-runner',
@@ -16,6 +22,8 @@ import { CaseQualityScoreComponent } from '../../components/case-quality-score/c
 export class TestRunnerComponent implements OnInit {
   testRun: TestRun | null = null;
   currentStage: TestRunStage | null = null;
+  templateFields: TemplateField[] = [];
+  fieldValues: { [fieldId: string]: string } = {};
 
   constructor(
     private route: ActivatedRoute,
@@ -31,12 +39,15 @@ export class TestRunnerComponent implements OnInit {
       return;
     }
 
+    this.loadTemplateFields();
+
     this.templateService.getTemplateById(templateId).subscribe({
       next: (template) => {
         this.testRun = createTestRunFromTemplate(template);
         this.testRunService.saveTestRun(this.testRun).subscribe({
           next: (savedTestRun) => {
             this.testRun = savedTestRun;
+            this.loadFieldValues();
             this.loadCurrentStage();
           },
           error: (error) => {
@@ -50,6 +61,81 @@ export class TestRunnerComponent implements OnInit {
         this.router.navigate(['/available-workflows']);
       }
     });
+  }
+
+  loadTemplateFields() {
+    const savedFields = localStorage.getItem('template_fields');
+    if (savedFields) {
+      try {
+        this.templateFields = JSON.parse(savedFields);
+      } catch (e) {
+        console.error('Error loading template fields:', e);
+        this.templateFields = [];
+      }
+    }
+  }
+
+  loadFieldValues() {
+    if (!this.testRun) return;
+    
+    const savedValues = localStorage.getItem(`test_run_fields_${this.testRun.id}`);
+    if (savedValues) {
+      try {
+        this.fieldValues = JSON.parse(savedValues);
+      } catch (e) {
+        console.error('Error loading field values:', e);
+        this.fieldValues = {};
+      }
+    } else {
+      this.templateFields.forEach(field => {
+        if (field.value) {
+          this.fieldValues[field.id] = field.value;
+        }
+      });
+    }
+  }
+
+  saveFieldValues() {
+    if (!this.testRun) return;
+    localStorage.setItem(`test_run_fields_${this.testRun.id}`, JSON.stringify(this.fieldValues));
+  }
+
+  getFieldGroupsForCurrentStage(): FieldGroup[] {
+    if (!this.currentStage) return [];
+
+    const groups: FieldGroup[] = [];
+
+    this.currentStage.selectedOptions.forEach(option => {
+      const fields = this.templateFields.filter(f => 
+        f.stageName === this.currentStage!.name && 
+        f.sourceType === 'option' && 
+        f.sourceName === option
+      );
+      if (fields.length > 0) {
+        groups.push({
+          sourceType: 'option',
+          sourceName: option,
+          fields: fields
+        });
+      }
+    });
+
+    this.currentStage.selectedChecklists.forEach(checklist => {
+      const fields = this.templateFields.filter(f => 
+        f.stageName === this.currentStage!.name && 
+        f.sourceType === 'checklist' && 
+        f.sourceName === checklist
+      );
+      if (fields.length > 0) {
+        groups.push({
+          sourceType: 'checklist',
+          sourceName: checklist,
+          fields: fields
+        });
+      }
+    });
+
+    return groups;
   }
 
   loadCurrentStage() {
@@ -109,10 +195,10 @@ export class TestRunnerComponent implements OnInit {
   goBack() {
     if (!this.testRun || !this.currentStage) return;
 
+    this.saveFieldValues();
     this.testRunService.updateStage(this.testRun, this.testRun.currentStageIndex, this.currentStage);
 
     if (this.testRun.currentStageIndex > 0) {
-      // Go to previous stage
       this.testRun.currentStageIndex--;
       this.testRunService.saveTestRun(this.testRun).subscribe({
         next: (updated) => {
@@ -124,7 +210,6 @@ export class TestRunnerComponent implements OnInit {
         }
       });
     } else {
-      // At first stage, navigate back to home page
       this.router.navigate(['/available-workflows']);
     }
   }
@@ -132,6 +217,7 @@ export class TestRunnerComponent implements OnInit {
   goNext() {
     if (!this.testRun || !this.currentStage || !this.canProceed()) return;
     
+    this.saveFieldValues();
     this.testRunService.updateStage(this.testRun, this.testRun.currentStageIndex, this.currentStage);
     
     if (this.testRun.currentStageIndex < this.testRun.stages.length - 1) {
@@ -151,6 +237,7 @@ export class TestRunnerComponent implements OnInit {
   submitTest() {
     if (!this.testRun || !this.currentStage || !this.canProceed()) return;
     
+    this.saveFieldValues();
     this.testRunService.updateStage(this.testRun, this.testRun.currentStageIndex, this.currentStage);
     this.testRunService.saveTestRun(this.testRun).subscribe({
       next: (updated) => {

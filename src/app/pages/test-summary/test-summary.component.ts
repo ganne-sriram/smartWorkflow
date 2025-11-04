@@ -70,6 +70,8 @@ export class TestSummaryComponent implements OnInit {
 
     this.displayedFields = [];
 
+    const fieldValues = this.loadFieldValues();
+
     this.testRun.stages.forEach(stage => {
       stage.selectedOptions.forEach(option => {
         const fields = this.templateFields.filter(f => 
@@ -78,11 +80,15 @@ export class TestSummaryComponent implements OnInit {
           f.sourceName === option
         );
         if (fields.length > 0) {
+          const fieldsWithValues = fields.map(f => ({
+            ...f,
+            value: fieldValues[f.id] ?? f.value
+          }));
           this.displayedFields.push({
             stageName: stage.name,
             sourceType: 'Option',
             sourceName: option,
-            fields: fields
+            fields: fieldsWithValues
           });
         }
       });
@@ -94,15 +100,34 @@ export class TestSummaryComponent implements OnInit {
           f.sourceName === checklist
         );
         if (fields.length > 0) {
+          const fieldsWithValues = fields.map(f => ({
+            ...f,
+            value: fieldValues[f.id] ?? f.value
+          }));
           this.displayedFields.push({
             stageName: stage.name,
             sourceType: 'Checklist',
             sourceName: checklist,
-            fields: fields
+            fields: fieldsWithValues
           });
         }
       });
     });
+  }
+
+  loadFieldValues(): { [fieldId: string]: string } {
+    if (!this.testRun) return {};
+    
+    const savedValues = localStorage.getItem(`test_run_fields_${this.testRun.id}`);
+    if (savedValues) {
+      try {
+        return JSON.parse(savedValues);
+      } catch (e) {
+        console.error('Error loading field values:', e);
+        return {};
+      }
+    }
+    return {};
   }
 
   generateSummary() {
